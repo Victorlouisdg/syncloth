@@ -9,6 +9,7 @@ setuptools.setup(
     description="TODO",
     install_requires=[
         "numpy",
+        "triangle",
     ],
     packages=find_packages(),
 )
