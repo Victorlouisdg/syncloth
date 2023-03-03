@@ -4,6 +4,7 @@ import os
 import sys
 
 import airo_blender as ab
+import bmesh
 import bpy
 import numpy as np
 from scipy.spatial.transform import Rotation as R
@@ -28,7 +29,9 @@ bpy.ops.object.modifier_add(type="COLLISION")
 ground = bpy.context.object
 collistion_modifier = ground.modifiers["Collision"]
 
-ground.collision.thickness_outer = 0.0
+# Can't be too low or parts of the towel will fall through
+ground_thickness = 0.01
+ground.collision.thickness_outer = ground_thickness
 ground.collision.cloth_friction = 80.0  # set maximum friction to make interesting configurations more stable
 
 # Part 1: Create the towel geometry
@@ -61,7 +64,30 @@ bpy.ops.object.mode_set(mode="EDIT")
 bpy.ops.mesh.subdivide(number_cuts=number_cuts)
 bpy.ops.object.mode_set(mode="OBJECT")
 
+
+# Increase vertex crease causes the subdivision to round them less
+# See here why we need bmesh to a a VertexCreaseLayer:
+# https://devtalk.blender.org/t/blender-3-1-vertex-crease-values/23607/7
+bm = bmesh.new()
+bm.from_mesh(towel.data)
+bm.verts.layers.crease.new()
+bm.edges.layers.crease.new()
+bm.to_mesh(towel.data)
+corner_vertices = [0, 1, 2, 3]
+vertex_creases = creases = towel.data.vertex_creases[0].data
+for i in corner_vertices:
+    vertex_creases[i].value = np.random.uniform(0.0, 0.5)
+
 bpy.ops.object.shade_smooth()
+
+# UV unwrap the towel here
+bpy.ops.object.select_all(action="DESELECT")
+towel.select_set(True)
+bpy.context.view_layer.objects.active = towel
+bpy.ops.object.mode_set(mode="EDIT")
+bpy.ops.mesh.select_all(action="SELECT")
+bpy.ops.uv.unwrap()
+bpy.ops.object.mode_set(mode="OBJECT")
 
 # raise position the towel above the table
 towel.location[2] = width
@@ -76,7 +102,6 @@ self_collision_distance = quad_target_width / 4  # magic number
 cloth_modifier.collision_settings.use_self_collision = True
 cloth_modifier.collision_settings.self_distance_min = self_collision_distance
 
-
 # Set scene frame end to 50
 n_frames = 50
 scene.frame_end = n_frames
@@ -87,6 +112,15 @@ for i in range(1, n_frames + 1):
 
 # Apply the cloth modifier
 bpy.ops.object.modifier_apply(modifier="Cloth")
+
+# Select the towel
+bpy.ops.object.select_all(action="DESELECT")
+towel.select_set(True)
+bpy.context.view_layer.objects.active = towel
+
+# Remove most of the ground thickness to make the towel sit closer to the table
+towel.location[2] -= 0.8 * ground_thickness
+bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
 
 # Set the camera to look top down at the towel
 camera = bpy.data.objects["Camera"]
@@ -101,18 +135,20 @@ scene.render.engine = "CYCLES"
 scene.cycles.samples = 64
 
 towel.asset_mark()
+towel.asset_data.author = "airo"
+towel.asset_data.description = "A rectangular towel, dropped from a small height."
+tags = ["towel", "cloth", "mesh", "simulated", "airo"]
+for tag in tags:
+    towel.asset_data.tags.new(tag)
+
+# Generating preview only work without -b flag
+# override = bpy.context.copy()
+# override["id"] = towel
+# with bpy.context.temp_override(**override):
+#     bpy.ops.ed.lib_id_generate_preview()
 
 random_seed_padded = f"{random_seed:08d}"
 blendfile_path = os.path.abspath(random_seed_padded + ".blend")
-
-# The context override method sadly doesn't work.
-# Temporarily enable file compression to save space, for this file this is approx. 1MB to 100KB
-# override = bpy.context.copy()
-# preferences_copy = bpy.context.preferences.copy() # -> 'Preferences' object has no attribute 'copy'
-# preferences_copy.filepaths.use_file_compression = True
-# preferences_copy.filepaths.file_preview_type = "CAMERA"
-# override["preferences"] = preferences_copy
-# with bpy.context.temp_override(**override):
 
 prefs = bpy.context.preferences
 use_file_compression = prefs.filepaths.use_file_compression
@@ -120,7 +156,7 @@ file_preview_type = prefs.filepaths.file_preview_type
 
 # Temporary change the preferences to save storage space
 prefs.filepaths.use_file_compression = True
-prefs.filepaths.file_preview_type = "CAMERA"
+prefs.filepaths.file_preview_type = "NONE"  # "CAMERA" does not work with -b flag
 bpy.ops.wm.save_as_mainfile(filepath=blendfile_path)
 
 # Restore the preferences
@@ -137,7 +173,6 @@ scene.render.filepath = random_seed_padded
 
 # Render the scene
 bpy.ops.render.render(write_still=True)
-
 
 subdivision_modifier = towel.modifiers.new(name="Subdivision", type="SUBSURF")
 subdivision_modifier.levels = 2
