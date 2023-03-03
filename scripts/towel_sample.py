@@ -4,6 +4,7 @@ import os
 import sys
 
 import airo_blender as ab
+import bmesh
 import bpy
 import cv2
 import numpy as np
@@ -28,25 +29,47 @@ bpy.ops.object.delete()
 
 scene = bpy.context.scene
 
-# Part 1: Create the towel geometry and material
-width = np.random.uniform(0.2, 0.6)
-length = np.random.uniform(width, 2 * width)
+# Part 1: load the towel asset
+file_directory = os.path.dirname(os.path.realpath(__file__))
+asset_snapshot_path = os.path.join(file_directory, "asset_snapshot.json")
 
-vertices = [
-    np.array([-width / 2, -length / 2, 0.0]),
-    np.array([-width / 2, length / 2, 0.0]),
-    np.array([width / 2, length / 2, 0.0]),
-    np.array([width / 2, -length / 2, 0.0]),
-]
-edges = [(0, 1), (1, 2), (2, 3), (3, 0)]
-faces = [(0, 1, 2, 3)]
+with open(asset_snapshot_path, "r") as file:
+    assets = json.load(file)["assets"]
 
-name = "Towel"
-mesh = bpy.data.meshes.new(name)
-mesh.from_pydata(vertices, edges, faces)
-mesh.update()
-towel = bpy.data.objects.new(name, mesh)
-bpy.context.collection.objects.link(towel)
+towel_mesh_assets = [asset for asset in assets if "towel_mesh" in asset["tags"]]
+
+# Load a random towel mesh
+random_towel_info = np.random.choice(towel_mesh_assets)
+towel = ab.load_asset(**random_towel_info)
+scene.collection.objects.link(towel)
+
+# Increase vertex crease causes the subdivision to round them less
+# See here why we need bmesh to a a VertexCreaseLayer:
+# https://devtalk.blender.org/t/blender-3-1-vertex-crease-values/23607/7
+bm = bmesh.new()
+bm.from_mesh(towel.data)
+bm.verts.layers.crease.new()
+bm.edges.layers.crease.new()
+bm.to_mesh(towel.data)
+corner_vertices = [0, 1, 2, 3]
+vertex_creases = creases = towel.data.vertex_creases[0].data
+for i in corner_vertices:
+    vertex_creases[i].value = np.random.uniform(0.0, 0.5)
+
+
+subdivision_modifier = towel.modifiers.new(name="Subdivision", type="SUBSURF")
+subdivision_modifier.levels = 2
+subdivision_modifier.render_levels = 2
+
+# Add a solifify modifier to the towel to give it some thickness
+solidify_modifier = towel.modifiers.new(name="Solidify", type="SOLIDIFY")
+solidify_modifier.thickness = np.random.uniform(0, 0.006)  # max 6mm thickness
+solidify_modifier.offset = 0
+
+# Add a subsivision surface modifier to the towel
+subdivision_modifier2 = towel.modifiers.new(name="Subdivision2", type="SUBSURF")
+subdivision_modifier2.levels = 1
+subdivision_modifier2.render_levels = 1
 
 # Add a random color to the towel
 random_rgb_color = np.random.uniform(0.0, 1.0, size=3)
@@ -54,12 +77,6 @@ ab.add_material(towel, random_rgb_color)
 
 
 # Part 2: Load a background and a table
-file_directory = os.path.dirname(os.path.realpath(__file__))
-asset_snapshot_path = os.path.join(file_directory, "asset_snapshot.json")
-
-with open(asset_snapshot_path, "r") as file:
-    assets = json.load(file)["assets"]
-
 # Set an HDRI world background
 worlds = [asset for asset in assets if asset["type"] == "worlds"]
 random_world_info = np.random.choice(worlds)
@@ -225,9 +242,20 @@ cv2.imwrite(image_annotated_path, image_bgr)
 coco_image = CocoImage(file_name=image_path_new, height=image_height, width=image_width, id=random_seed)
 print(coco_image)
 
+# We need to use the evaluated version of the towel, which takes into account the modifiers
+depsgraph = bpy.context.evaluated_depsgraph_get()
+evaluated_towel = towel.evaluated_get(depsgraph)
+mesh = evaluated_towel.data.copy()
 
-keypoints_3D = [towel.matrix_world @ v.co for v in towel.data.vertices]
+keypoint_ids = [0, 1, 2, 3]
+keypoints_3D = [evaluated_towel.matrix_world @ v.co for v in evaluated_towel.data.vertices if v.index in keypoint_ids]
 keypoints_2D = [world_to_camera_view(scene, camera, corner) for corner in keypoints_3D]
+
+# Debug visualization: add a small sphere at each keypoint
+for i, keypoint in enumerate(keypoints_3D):
+    bpy.ops.mesh.primitive_uv_sphere_add(location=keypoint, scale=(0.01, 0.01, 0.01))
+    sphere = bpy.context.object
+    ab.add_material(sphere, (0.8, 0, 0))
 
 coco_keypoints = []
 num_labeled_keypoints = 0

@@ -1,6 +1,1406 @@
 {
     "assets": [
         {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000093.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000014.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000054.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000073.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000083.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000089.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000074.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000096.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000021.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000003.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000002.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000085.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000077.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000078.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000075.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000024.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000019.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000023.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000025.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000084.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000068.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000099.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000039.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000059.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000009.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000097.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000001.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000013.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000081.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000000.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000053.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000032.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000051.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000028.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000048.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000064.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000098.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000060.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000092.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000034.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000012.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000061.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000090.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000006.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000052.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000082.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000044.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000031.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000007.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000004.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000069.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000018.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000079.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000091.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000027.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000045.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000022.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000072.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000038.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000042.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000016.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000041.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000015.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000058.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000036.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000026.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000095.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000011.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000086.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000065.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000057.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000087.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000035.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000094.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000062.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000066.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000046.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000005.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000080.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000040.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000071.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000088.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000049.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000030.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000070.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000037.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000008.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000067.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000043.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000047.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000029.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000010.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000056.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000020.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000076.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000017.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000055.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000063.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000033.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
+            "name": "Towel",
+            "library": "User Library",
+            "relative_path": "towel_meshes/towel_100/00000050.blend",
+            "type": "objects",
+            "tags": [
+                "towel",
+                "towel_mesh",
+                "cloth",
+                "mesh",
+                "simulated",
+                "airo"
+            ]
+        },
+        {
             "name": "river_small_rocks",
             "library": "Poly Haven",
             "relative_path": "river_small_rocks/river_small_rocks.blend",
