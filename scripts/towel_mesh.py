@@ -14,11 +14,11 @@ if "--" in sys.argv:
     argv = sys.argv[sys.argv.index("--") + 1 :]  # get all args after "--"
     parser = argparse.ArgumentParser()
     parser.add_argument("seed", type=int)
+    parser.add_argument("--debug", action="store_true")
     args = parser.parse_known_args(argv)[0]
     random_seed = args.seed
 
 np.random.seed(random_seed)
-
 scene = bpy.context.scene
 
 bpy.ops.object.delete()
@@ -63,7 +63,6 @@ bpy.ops.object.mode_set(mode="OBJECT")
 
 bpy.ops.object.shade_smooth()
 
-
 # raise position the towel above the table
 towel.location[2] = width
 towel.rotation_euler = R.random().as_euler("xyz")
@@ -85,6 +84,59 @@ scene.frame_end = n_frames
 # Run the simulation forward
 for i in range(1, n_frames + 1):
     scene.frame_set(i)
+
+# Apply the cloth modifier
+bpy.ops.object.modifier_apply(modifier="Cloth")
+
+# Set the camera to look top down at the towel
+camera = bpy.data.objects["Camera"]
+camera.location = (0, 0, 2.0)
+camera.rotation_euler = (0, 0, 0)
+
+# set resolution to 256x256
+scene.render.resolution_x = 256
+scene.render.resolution_y = 256
+
+scene.render.engine = "CYCLES"
+scene.cycles.samples = 64
+
+towel.asset_mark()
+
+random_seed_padded = f"{random_seed:08d}"
+blendfile_path = os.path.abspath(random_seed_padded + ".blend")
+
+# The context override method sadly doesn't work.
+# Temporarily enable file compression to save space, for this file this is approx. 1MB to 100KB
+# override = bpy.context.copy()
+# preferences_copy = bpy.context.preferences.copy() # -> 'Preferences' object has no attribute 'copy'
+# preferences_copy.filepaths.use_file_compression = True
+# preferences_copy.filepaths.file_preview_type = "CAMERA"
+# override["preferences"] = preferences_copy
+# with bpy.context.temp_override(**override):
+
+prefs = bpy.context.preferences
+use_file_compression = prefs.filepaths.use_file_compression
+file_preview_type = prefs.filepaths.file_preview_type
+
+# Temporary change the preferences to save storage space
+prefs.filepaths.use_file_compression = True
+prefs.filepaths.file_preview_type = "CAMERA"
+bpy.ops.wm.save_as_mainfile(filepath=blendfile_path)
+
+# Restore the preferences
+prefs.filepaths.use_file_compression = use_file_compression
+prefs.filepaths.file_preview_type = file_preview_type
+
+
+if not args.debug:
+    quit()
+
+### Debug stuff below ###
+# Set the output path
+scene.render.filepath = random_seed_padded
+
+# Render the scene
+bpy.ops.render.render(write_still=True)
 
 
 subdivision_modifier = towel.modifiers.new(name="Subdivision", type="SUBSURF")
@@ -129,23 +181,3 @@ with open(asset_snapshot_path, "r") as file:
 world_info = [asset for asset in assets if asset["name"] == "river_rocks"][0]
 world = ab.load_asset(**world_info)
 scene.world = world
-
-
-# Set the camera to look top down at the towel
-camera = bpy.data.objects["Camera"]
-camera.location = (0, 0, 2.0)
-camera.rotation_euler = (0, 0, 0)
-
-# set resolution to 256x256
-scene.render.resolution_x = 256
-scene.render.resolution_y = 256
-
-scene.render.engine = "CYCLES"
-scene.cycles.samples = 64
-
-# Set the output path
-random_seed_padded = f"{random_seed:08d}"
-scene.render.filepath = random_seed_padded
-
-# Render the scene
-bpy.ops.render.render(write_still=True)
