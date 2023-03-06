@@ -73,7 +73,6 @@ links.new(tree.nodes["Render Layers"].outputs["Normal"], viewer_node.inputs[0])
 bpy.ops.render.render(write_still=True)
 
 world_normals_image = bpy.data.images["Viewer Node"]
-print(world_normals_image.size[0], world_normals_image.size[1])
 w, h = world_normals_image.size
 world_normals = np.array(world_normals_image.pixels)
 world_normals = np.reshape(world_normals, (h, w, 4))[:, :, 0:3]
@@ -98,6 +97,26 @@ for i in range(h):
 world_normals = 0.5 * world_normals + 0.5  # [-1, 1] to [0, 1]
 camera_normals = 0.5 * camera_normals + 0.5  # [-1, 1] to [0, 1]
 
+camera_normals_opencv = np.array(255 * camera_normals[:, :, ::-1], dtype=np.uint8)
+
 # use opencv to save the normal map
 cv2.imwrite("normal_map.png", 255 * world_normals[:, :, ::-1])
-cv2.imwrite("camera_normal_map.png", 255 * camera_normals[:, :, ::-1])
+cv2.imwrite("camera_normal_map.png", camera_normals_opencv)
+
+# Calculate Prewitt operator for x and y gradients
+prewitt_x = np.array([[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]])
+prewitt_y = np.array([[-1, -1, -1], [0, 0, 0], [1, 1, 1]])
+
+# Calculate the x and y gradients
+camera_normals_x = cv2.filter2D(camera_normals, -1, prewitt_x)
+camera_normals_y = cv2.filter2D(camera_normals, -1, prewitt_y)
+
+# Calculate the edge map
+edge_map = np.sqrt(camera_normals_x**2 + camera_normals_y**2)
+
+# calculate the magnitude of the edge map vectors
+edge_map = np.linalg.norm(edge_map, axis=2)
+
+# Save the edge map
+cv2.imwrite("edge_map.png", 255 * edge_map)
+cv2.imwrite("edge_map_inverted.png", 255 - 255 * edge_map)
