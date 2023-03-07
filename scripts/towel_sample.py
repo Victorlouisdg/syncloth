@@ -251,12 +251,6 @@ keypoint_ids = [0, 1, 2, 3]
 keypoints_3D = [evaluated_towel.matrix_world @ v.co for v in evaluated_towel.data.vertices if v.index in keypoint_ids]
 keypoints_2D = [world_to_camera_view(scene, camera, corner) for corner in keypoints_3D]
 
-# Debug visualization: add a small sphere at each keypoint
-for i, keypoint in enumerate(keypoints_3D):
-    bpy.ops.mesh.primitive_uv_sphere_add(location=keypoint, scale=(0.01, 0.01, 0.01))
-    sphere = bpy.context.object
-    ab.add_material(sphere, (0.8, 0, 0))
-
 coco_keypoints = []
 num_labeled_keypoints = 0
 for keypoint_2D in keypoints_2D:
