@@ -1,6 +1,7 @@
 import airo_blender as ab
 import bpy
 import numpy as np
+from scipy.spatial.transform import Rotation as R
 from ur_analytic_ik import ur5e
 
 from syncloth.visualization.frame import add_frame
@@ -56,20 +57,36 @@ for i, keypoint in enumerate(keypoints_3D):
     ab.add_material(sphere, (0.8, 0, 0))
 
 
-# Load UR5e robot arm
-def add_arm(left=True):
+# Load UR5e arm with robotiq gripper attached
+def add_robot():
+    # load arm
     urdf_path = "/home/idlab185/urdf-workshop/universal_robots/ros/ur5e/ur5e.urdf"
-    free_joint_empties, joint_empties, link_empties = ab.import_urdf(urdf_path)
-    base_links = [link for link in link_empties.values() if link.parent is None]
-    base_link = base_links[0]
+    arm_joints, _, arm_links = ab.import_urdf(urdf_path)
+    arm_bases = [link for link in arm_links.values() if link.parent is None]
+    arm_base = arm_bases[0]
+    tool_link = arm_links["tool0"]
 
-    y = 0.35 if left else -0.35
-    base_link.location = (0, y, 0.75)
-    return base_link, free_joint_empties
+    # load gripper
+    urdf_path = "/home/idlab185/urdf-workshop/robotiq/robotiq_2f85_danfoa/robotiq_2f85_v3.urdf"
+    gripper_joints, _, gripper_links = ab.import_urdf(urdf_path)
+    gripper_bases = [link for link in gripper_links.values() if link.parent is None]
+    gripper_base = gripper_bases[0]
+
+    # can be posed
+    gripper_joints["finger_joint"].rotation_euler.z = np.deg2rad(30)
+
+    gripper_base.parent = tool_link
+    return arm_base, arm_joints
 
 
-left_arm_base, left_arm_joints = add_arm(left=True)
-right_arm_base, right_arm_joints = add_arm(left=False)
+left_arm_base, left_arm_joints = add_robot()
+right_arm_base, right_arm_joints = add_robot()
+
+y = 0.35
+left_arm_base.location = (0, y, 0.75)
+right_arm_base.location = (0, -y, 0.75)
+bpy.context.view_layer.update()
+
 
 # Get the two keypoints with the greatest distance to the robot
 keypoints_by_distance = sorted(keypoints_3D, key=lambda x: np.linalg.norm(x))
@@ -96,14 +113,27 @@ home_joints_right = np.deg2rad([180, -60, 90, -30, 0, 0])
 # set_joint_angles(home_joints_left, left_arm_joints)
 # set_joint_angles(home_joints_right, right_arm_joints)
 
+tcp_offset = np.array([0.0, 0.0, 0.17])
+tcp_transform = np.identity(4)
+tcp_transform[:3, 3] = tcp_offset
+
 
 def pose_arm(far_self, far_other, arm_in_world, arm_joints, home_joints):
     Z = far_other - far_self
+    print("Z", Z)
+    print("far_self", far_self)
+    print("far_other", far_other)
     Z = Z / np.linalg.norm(Z)
-    X = np.array([0, 0, 1])
-    Y = np.cross(Z, X)
+    Y = np.array([0, 0, 1])
+    X = np.cross(Y, Z)
     orientation = np.column_stack((X, Y, Z))
-    translation = far_self
+
+    # rotate 45 degrees around local X
+    rotation_X = R.from_rotvec(np.pi / 4 * X).as_matrix()
+    orientation = rotation_X @ orientation
+
+    translation = far_self.copy()
+    translation[0] += 0.12
 
     grasp = np.identity(4)
     grasp[:3, :3] = orientation
@@ -114,7 +144,10 @@ def pose_arm(far_self, far_other, arm_in_world, arm_joints, home_joints):
     # arm_in_world = np.array(arm_base.matrix_world)
     grasp_in_arm = np.linalg.inv(arm_in_world) @ grasp
 
-    solutions = ur5e.inverse_kinematics(grasp_in_arm)
+    add_frame(grasp_in_arm, name="grasp_in_arm")
+
+    solutions = ur5e.inverse_kinematics_with_tcp(grasp_in_arm, tcp_transform)
+    # solutions = ur5e.inverse_kinematics(grasp_in_arm)
     print("solutions:")
     print(solutions)
     print("home_joints:")
@@ -139,7 +172,6 @@ def pose_arm(far_self, far_other, arm_in_world, arm_joints, home_joints):
 
     for joint, joint_angle in zip(arm_joints.values(), *solution_closest_to_home):
         joint.rotation_euler = (0, 0, joint_angle)
-        joint.keyframe_insert(data_path="rotation_euler", frame=i + 1)
 
 
 pose_arm(far_left, far_right, np.array(left_arm_base.matrix_world), left_arm_joints, home_joints_left)
