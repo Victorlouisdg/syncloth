@@ -64,7 +64,7 @@ def add_robot():
     arm_joints, _, arm_links = ab.import_urdf(urdf_path)
     arm_bases = [link for link in arm_links.values() if link.parent is None]
     arm_base = arm_bases[0]
-    tool_link = arm_links["tool0"]
+    tool_link = arm_links["flange"]
 
     # load gripper
     urdf_path = "/home/idlab185/urdf-workshop/robotiq/robotiq_2f85_danfoa/robotiq_2f85_v3.urdf"
@@ -143,8 +143,6 @@ def pose_arm(far_self, far_other, arm_in_world, arm_joints, home_joints):
 
     # arm_in_world = np.array(arm_base.matrix_world)
     grasp_in_arm = np.linalg.inv(arm_in_world) @ grasp
-
-    add_frame(grasp_in_arm, name="grasp_in_arm")
 
     solutions = ur5e.inverse_kinematics_with_tcp(grasp_in_arm, tcp_transform)
     # solutions = ur5e.inverse_kinematics(grasp_in_arm)
