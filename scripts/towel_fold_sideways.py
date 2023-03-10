@@ -80,9 +80,13 @@ def add_robot():
 left_arm_base, left_arm_joints = add_robot()
 right_arm_base, right_arm_joints = add_robot()
 
-y = 0.35
-left_arm_base.location = (0, y, 0.75)
-right_arm_base.location = (0, -y, 0.75)
+y = 0.25
+left_arm_base.location = (-0.05, y, 1.1)
+left_arm_base.rotation_euler = (-np.pi / 2, 0, 0)
+
+right_arm_base.location = (-0.05, -y, 1.1)
+right_arm_base.rotation_euler = (np.pi / 2, 0, 0)
+
 bpy.context.view_layer.update()
 
 # Positions the camera
@@ -122,13 +126,9 @@ def set_joint_angles(joint_angles, arm_joints):
         joint.rotation_euler = (0, 0, joint_angle)
 
 
-# home_joints_left = np.deg2rad([90, -90, -120, -150, 0, 0])
-# home_joints_right = np.deg2rad([90, -90, 120, -30, 0, 0])
-
-
-# home_joints_left = np.deg2rad([270, -90, 120, 0, 180, 0])
-home_joints_left = np.deg2rad([180, -30, 60, -120, -135, 90])
-home_joints_right = np.deg2rad([-90, -90, -120, 180, 180, 0])
+# home_joints_left = np.deg2rad([0, -150, -70, -30, 130, 30])
+home_joints_left = np.deg2rad([-180, -30, 75, -135, -45, 0])
+home_joints_right = np.deg2rad([0, -150, -75, -45, 45, 0])
 
 set_joint_angles(home_joints_left, left_arm_joints)
 set_joint_angles(home_joints_right, right_arm_joints)
@@ -174,8 +174,6 @@ def animate_arm(far_self, close_self, far_other, arm_in_world, arm_joints, home_
     rotation_Y = R.from_rotvec(-np.pi / 4 * Y).as_matrix()
     orientation = rotation_Y @ orientation
 
-    prev_joints = home_joints
-
     # loop through all the IK solutions
 
     # grasp = np.identity(4)
@@ -195,6 +193,8 @@ def animate_arm(far_self, close_self, far_other, arm_in_world, arm_joints, home_
     # bpy.context.scene.frame_end = len(solutions) + 1
     # bpy.context.scene.render.fps = 2
 
+    prev_joints = home_joints
+
     for i in range(num_samples):
         translation = curve[i]
 
@@ -204,13 +204,14 @@ def animate_arm(far_self, close_self, far_other, arm_in_world, arm_joints, home_
 
         grasp_in_arm = np.linalg.inv(arm_in_world) @ grasp
 
-        solution = ur5e.inverse_kinematics_closest_with_tcp(grasp_in_arm, tcp_transform, *prev_joints)
+        solutions = ur5e.inverse_kinematics_closest_with_tcp(grasp_in_arm, tcp_transform, *prev_joints)
+        # print(len(solutions))
 
-        for joint, joint_angle in zip(arm_joints.values(), *solution[0]):
+        for joint, joint_angle in zip(arm_joints.values(), *solutions[0]):
             joint.rotation_euler = (0, 0, joint_angle)
             joint.keyframe_insert(data_path="rotation_euler", frame=i + 1)
 
-        prev_joints = solution[0][0]
+        prev_joints = solutions[0][0]
 
 
 animate_arm(far_left, close_left, far_right, np.array(left_arm_base.matrix_world), left_arm_joints, home_joints_left)

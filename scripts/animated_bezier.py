@@ -78,7 +78,6 @@ skin(points_edge_string, radius=0.005)
 ab.add_material(points_edge_string, (0.5, 0.5, 1))
 
 num_samples = 100
-
 t_range = np.linspace(0, 1, num_samples, endpoint=True)
 curve = np.array([quadratic_bezier(t, point0, point1, point2) for t in t_range])
 
