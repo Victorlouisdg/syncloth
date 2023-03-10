@@ -16,10 +16,10 @@ def add_robot():
     arm_joints, _, arm_links = ab.import_urdf(urdf_path)
     arm_bases = [link for link in arm_links.values() if link.parent is None]
     arm_base = arm_bases[0]
-    tool_link = arm_links["tool0"]
+    tool_link = arm_links["wrist_3_link"]
 
     # load gripper
-    urdf_path = "/home/idlab185/urdf-workshop/robotiq/robotiq_2f85_danfoa/robotiq_2f85_v3.urdf"
+    urdf_path = "/home/idlab185/urdf-workshop/robotiq/robotiq_2f85_aprice/robotiq_2f85_v3.urdf"
     gripper_joints, _, gripper_links = ab.import_urdf(urdf_path)
     gripper_bases = [link for link in gripper_links.values() if link.parent is None]
     gripper_base = gripper_bases[0]
@@ -33,7 +33,7 @@ def add_robot():
 
 arm_base, tool_link, arm_joints = add_robot()
 
-tcp_offset = np.array([0.0, 0.0, 0.17])
+tcp_offset = np.array([0.0, 0.0, 0.172])
 tcp_transform = np.identity(4)
 tcp_transform[:3, 3] = tcp_offset
 

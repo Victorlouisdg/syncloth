@@ -64,10 +64,10 @@ def add_robot():
     arm_joints, _, arm_links = ab.import_urdf(urdf_path)
     arm_bases = [link for link in arm_links.values() if link.parent is None]
     arm_base = arm_bases[0]
-    tool_link = arm_links["flange"]
+    tool_link = arm_links["wrist_3_link"]
 
     # load gripper
-    urdf_path = "/home/idlab185/urdf-workshop/robotiq/robotiq_2f85_danfoa/robotiq_2f85_v3.urdf"
+    urdf_path = "/home/idlab185/urdf-workshop/robotiq/robotiq_2f85_aprice/robotiq_2f85_v3.urdf"
     gripper_joints, _, gripper_links = ab.import_urdf(urdf_path)
     gripper_bases = [link for link in gripper_links.values() if link.parent is None]
     gripper_base = gripper_bases[0]
@@ -86,6 +86,23 @@ y = 0.35
 left_arm_base.location = (0, y, 0.75)
 right_arm_base.location = (0, -y, 0.75)
 bpy.context.view_layer.update()
+
+# Positions the camera
+camera = bpy.data.objects["Camera"]
+camera.location = (0, 0, 1.4)
+camera.rotation_euler = (np.deg2rad(30), 0, np.deg2rad(-90))
+
+# set lens and sensor size
+camera.data.lens = 2.12
+camera.data.sensor_width = 5.376
+camera.data.sensor_height = 3.04
+
+camera.data.display_size = 0.2
+
+# set resolution to 720p
+scene = bpy.context.scene
+scene.render.resolution_x = 1280
+scene.render.resolution_y = 720
 
 
 # Get the two keypoints with the greatest distance to the robot
@@ -107,33 +124,30 @@ def set_joint_angles(joint_angles, arm_joints):
         joint.rotation_euler = (0, 0, joint_angle)
 
 
-home_joints_left = np.deg2rad([0, -120, -90, 210, 0, 0])
-home_joints_right = np.deg2rad([180, -60, 90, -30, 0, 0])
+home_joints_left = np.deg2rad([90, -90, -120, -150, 0, 0])
+home_joints_right = np.deg2rad([90, -90, 120, -30, 0, 0])
 
-# set_joint_angles(home_joints_left, left_arm_joints)
-# set_joint_angles(home_joints_right, right_arm_joints)
+set_joint_angles(home_joints_left, left_arm_joints)
+set_joint_angles(home_joints_right, right_arm_joints)
 
-tcp_offset = np.array([0.0, 0.0, 0.17])
+tcp_offset = np.array([0.0, 0.0, 0.172])
 tcp_transform = np.identity(4)
 tcp_transform[:3, 3] = tcp_offset
 
 
 def pose_arm(far_self, far_other, arm_in_world, arm_joints, home_joints):
     Z = far_other - far_self
-    print("Z", Z)
-    print("far_self", far_self)
-    print("far_other", far_other)
     Z = Z / np.linalg.norm(Z)
-    Y = np.array([0, 0, 1])
-    X = np.cross(Y, Z)
+    X = np.array([0, 0, 1])
+    Y = np.cross(Z, X)
     orientation = np.column_stack((X, Y, Z))
 
-    # rotate 45 degrees around local X
-    rotation_X = R.from_rotvec(np.pi / 4 * X).as_matrix()
-    orientation = rotation_X @ orientation
+    # rotate 45 degrees around local Y
+    rotation_Y = R.from_rotvec(-np.pi / 4 * Y).as_matrix()
+    orientation = rotation_Y @ orientation
 
     translation = far_self.copy()
-    translation[0] += 0.12
+    # translation[0] += 0.12
 
     grasp = np.identity(4)
     grasp[:3, :3] = orientation
@@ -144,32 +158,11 @@ def pose_arm(far_self, far_other, arm_in_world, arm_joints, home_joints):
     # arm_in_world = np.array(arm_base.matrix_world)
     grasp_in_arm = np.linalg.inv(arm_in_world) @ grasp
 
-    solutions = ur5e.inverse_kinematics_with_tcp(grasp_in_arm, tcp_transform)
-    # solutions = ur5e.inverse_kinematics(grasp_in_arm)
-    print("solutions:")
-    print(solutions)
-    print("home_joints:")
-    print(home_joints)
+    solution = ur5e.inverse_kinematics_closest_with_tcp(grasp_in_arm, tcp_transform, *home_joints)
 
-    # solution_closest_to_home
-    min_distance = np.inf
-    solution_closest_to_home = None
-
-    for solution in solutions:
-        distance = 0
-        for i in range(6):
-            x = solution[0, i]
-            y = home_joints[i]
-            # take into account the fact that angles wrap around
-            angle_delta = min((2 * np.pi) - abs(x - y), abs(x - y))
-            distance += angle_delta
-
-        if distance < min_distance:
-            min_distance = distance
-            solution_closest_to_home = solution
-
-    for joint, joint_angle in zip(arm_joints.values(), *solution_closest_to_home):
+    for joint, joint_angle in zip(arm_joints.values(), *solution[0]):
         joint.rotation_euler = (0, 0, joint_angle)
+        joint.keyframe_insert(data_path="rotation_euler", frame=i + 1)
 
 
 pose_arm(far_left, far_right, np.array(left_arm_base.matrix_world), left_arm_joints, home_joints_left)
