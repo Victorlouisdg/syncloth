@@ -138,15 +138,15 @@ tcp_transform = np.identity(4)
 tcp_transform[:3, 3] = tcp_offset
 
 
-def add_edge_string(points):
+def add_curve_mesh(points):
     """Add a string of edges between the given points."""
     edges = [(i, i + 1) for i in range(len(points) - 1)]
     mesh = bpy.data.meshes.new("Edge string")
     mesh.from_pydata(points, edges, [])
     mesh.update()
-    edge_string = bpy.data.objects.new("Edge string", mesh)
-    bpy.context.collection.objects.link(edge_string)
-    return edge_string
+    curve_mesh = bpy.data.objects.new("Edge string", mesh)
+    bpy.context.collection.objects.link(curve_mesh)
+    return curve_mesh
 
 
 def quadratic_bezier(t, p0, p1, p2):
@@ -162,7 +162,7 @@ def animate_arm(far_self, close_self, far_other, arm_in_world, arm_joints, home_
     t_range = np.linspace(0, 1, num_samples, endpoint=True)
     curve = np.array([quadratic_bezier(t, *points) for t in t_range])
 
-    add_edge_string(curve)
+    add_curve_mesh(curve)
 
     Z = far_other - far_self
     Z = Z / np.linalg.norm(Z)

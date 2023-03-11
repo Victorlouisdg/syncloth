@@ -1,10 +1,8 @@
 import airo_blender as ab
 import bpy
 import numpy as np
-from scipy.spatial.transform import Rotation as R
+from scipy.spatial.transform import Rotation, Slerp
 from ur_analytic_ik import ur5e
-
-from syncloth.visualization.frame import add_frame
 
 bpy.ops.object.delete()
 bpy.ops.mesh.primitive_plane_add()
@@ -78,7 +76,7 @@ def add_robot():
 left_arm_base, left_arm_joints = add_robot()
 right_arm_base, right_arm_joints = add_robot()
 
-y = 0.45
+y = 0.5
 left_arm_base.location = (0, y, table_height)
 
 right_arm_base.location = (0, -y, table_height)
@@ -144,23 +142,27 @@ tcp_offset = np.array([0.0, 0.0, 0.172])
 tcp_transform = np.identity(4)
 tcp_transform[:3, 3] = tcp_offset
 
-print(len(keypoints_3D))
 ordered_keypoints = get_ordered_keypoints(keypoints_3D)
-for i, keypoint in enumerate(ordered_keypoints):
-    bpy.ops.mesh.primitive_uv_sphere_add(location=keypoint, scale=(0.01, 0.01, 0.01))
-    sphere = bpy.context.object
-    sphere.name = "keypoint_" + str(i)
 
 
-def add_edge_string(points):
+def skin(edge_mesh: bpy.types.Object, radius: float = 0.01):
+    edge_mesh.modifiers.new(name="Skin", type="SKIN")
+    edge_mesh.modifiers.new(name="Subdivision", type="SUBSURF")
+
+    for vertex in edge_mesh.data.vertices:
+        skin_vertex = edge_mesh.data.skin_vertices[""].data[vertex.index]
+        skin_vertex.radius = (radius, radius)
+
+
+def add_curve_mesh(points):
     """Add a string of edges between the given points."""
     edges = [(i, i + 1) for i in range(len(points) - 1)]
     mesh = bpy.data.meshes.new("Edge string")
     mesh.from_pydata(points, edges, [])
     mesh.update()
-    edge_string = bpy.data.objects.new("Edge string", mesh)
-    bpy.context.collection.objects.link(edge_string)
-    return edge_string
+    curve_mesh = bpy.data.objects.new("Curve", mesh)
+    bpy.context.collection.objects.link(curve_mesh)
+    return curve_mesh
 
 
 def quadratic_bezier(t, p0, p1, p2):
@@ -169,33 +171,46 @@ def quadratic_bezier(t, p0, p1, p2):
 
 def animate_arm(start_self, end_self, start_other, arm_in_world, arm_joints, home_joints):
     middle = (start_self + end_self) / 2
-    middle[2] += np.linalg.norm(end_self - start_self) / 2
+    middle[2] += np.linalg.norm(end_self - start_self)
     points = np.vstack((start_self, middle, end_self))
 
     num_samples = 100
     t_range = np.linspace(0, 1, num_samples, endpoint=True)
     curve = np.array([quadratic_bezier(t, *points) for t in t_range])
 
-    add_edge_string(curve)
+    curve_mesh = add_curve_mesh(curve)
+    ab.add_material(curve_mesh, color=(1, 0.5, 0))
+    skin(curve_mesh, radius=0.005)
 
     Z = end_self - start_self
     Z = Z / np.linalg.norm(Z)
     X = np.array([0, 0, 1])
     Y = np.cross(Z, X)
-    orientation = np.column_stack((X, Y, Z))
+    orientation_flat = np.column_stack((X, Y, Z))
 
     # rotate 45 degrees around local Y
-    rotation_Y = R.from_rotvec(-np.pi / 4 * Y).as_matrix()
-    orientation = rotation_Y @ orientation
+    rotation_Y45 = Rotation.from_rotvec(-np.pi / 4 * Y).as_matrix()
+    orientation_start = rotation_Y45 @ orientation_flat
+
+    # rotate 90 degrees around local Y
+    rotation_Y90 = Rotation.from_rotvec(-np.pi / 2 * Y).as_matrix()
+    orientation_middle = rotation_Y90 @ orientation_flat
+
+    # rotate 135 degrees around local Y
+    rotation_Y135 = Rotation.from_rotvec(-3 * np.pi / 4 * Y).as_matrix()
+    orientation_end = rotation_Y135 @ orientation_flat
+
+    # use scipy SLERP to interpolate between the orientations
+    orientations = np.array([orientation_start, orientation_middle, orientation_end])
+    orientations = Rotation.from_matrix(orientations)
+    slerp = Slerp([0.0, 0.5, 1.0], orientations)
 
     # loop through all the IK solutions
 
     grasp = np.identity(4)
-    grasp[:3, :3] = orientation
+    grasp[:3, :3] = orientation_start
     grasp[:3, 3] = curve[0]
-
-    add_frame(grasp)
-    # grasp_in_arm = np.linalg.inv(arm_in_world) @ grasp
+    grasp_in_arm = np.linalg.inv(arm_in_world) @ grasp
 
     # solutions = ur5e.inverse_kinematics_with_tcp(grasp_in_arm, tcp_transform)
 
@@ -203,25 +218,32 @@ def animate_arm(start_self, end_self, start_other, arm_in_world, arm_joints, hom
     #     for joint, joint_angle in zip(arm_joints.values(), *solution):
     #         joint.rotation_euler = (0, 0, joint_angle)
     #         # insert keyframe for rotation_euler at frame i + 1
-    #         joint.keyframe_insert(data_path="rotation_euler", frame=i + 1)
+    #         joint.keyframe_insert(data_path="rotation_euler", frame=i+1)
 
     # # Set up animation loop
     # bpy.context.scene.frame_end = len(solutions) + 1
     # bpy.context.scene.render.fps = 2
 
+    # grasp = np.identity(4)
+    # grasp[:3, :3] = orientation_start
+    # grasp[:3, 3] = curve[0]
+
+    # add_frame(grasp)
+
     prev_joints = home_joints
 
     for i in range(num_samples):
         translation = curve[i]
+        interpolated_orientation = slerp(t_range[i]).as_matrix()
 
         grasp = np.identity(4)
-        grasp[:3, :3] = orientation
+
+        grasp[:3, :3] = interpolated_orientation
         grasp[:3, 3] = translation
 
         grasp_in_arm = np.linalg.inv(arm_in_world) @ grasp
 
         solutions = ur5e.inverse_kinematics_closest_with_tcp(grasp_in_arm, tcp_transform, *prev_joints)
-        # print(len(solutions))
 
         for joint, joint_angle in zip(arm_joints.values(), *solutions[0]):
             joint.rotation_euler = (0, 0, joint_angle)
