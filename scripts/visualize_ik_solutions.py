@@ -1,37 +1,15 @@
-import airo_blender as ab
 import bpy
 import numpy as np
 from mathutils import Matrix
 from ur_analytic_ik import ur5e
 
+from syncloth.robot_arms import add_ur_with_robotiq
 from syncloth.visualization.frame import add_frame
+from syncloth.visualization.inverse_kinematics import animate_ik_solutions_cycle
 
 bpy.ops.object.delete()
 
-
-# Load UR5e arm with robotiq gripper attached
-def add_robot():
-    # load arm
-    urdf_path = "/home/idlab185/urdf-workshop/universal_robots/ros/ur5e/ur5e.urdf"
-    arm_joints, _, arm_links = ab.import_urdf(urdf_path)
-    arm_bases = [link for link in arm_links.values() if link.parent is None]
-    arm_base = arm_bases[0]
-    tool_link = arm_links["wrist_3_link"]
-
-    # load gripper
-    urdf_path = "/home/idlab185/urdf-workshop/robotiq/robotiq_2f85_aprice/robotiq_2f85_v3.urdf"
-    gripper_joints, _, gripper_links = ab.import_urdf(urdf_path)
-    gripper_bases = [link for link in gripper_links.values() if link.parent is None]
-    gripper_base = gripper_bases[0]
-
-    # can be posed
-    gripper_joints["finger_joint"].rotation_euler.z = np.deg2rad(30)
-
-    gripper_base.parent = tool_link
-    return arm_base, tool_link, arm_joints
-
-
-arm_base, tool_link, arm_joints = add_robot()
+arm_joints, _, arm_base, tool_link, _ = add_ur_with_robotiq()
 
 tcp_offset = np.array([0.0, 0.0, 0.172])
 tcp_transform = np.identity(4)
@@ -50,16 +28,6 @@ tcp_pose = np.identity(4)
 tcp_pose[:3, :3] = orientation
 tcp_pose[:3, 3] = translation
 
-
 solutions = ur5e.inverse_kinematics_with_tcp(tcp_pose, tcp_transform)
 
-for i, solution in enumerate(solutions):
-    for joint, joint_angle in zip(arm_joints.values(), *solution):
-        joint.rotation_euler = (0, 0, joint_angle)
-        # insert keyframe for rotation_euler at frame i + 1
-        joint.keyframe_insert(data_path="rotation_euler", frame=i + 1)
-
-
-# Set up animation loop
-bpy.context.scene.frame_end = len(solutions) + 1
-bpy.context.scene.render.fps = 2
+animate_ik_solutions_cycle(arm_joints, solutions)
