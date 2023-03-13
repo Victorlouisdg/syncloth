@@ -86,7 +86,41 @@ def animate_arm(start_self, end_self, start_other, arm_in_world, arm_joints, hom
     orientations = Rotation.from_matrix(orientations)
     slerp = Slerp([0.0, 0.5, 1.0], orientations)
 
-    prev_joints = home_joints
+    frame_poses = []  # for each frame a pose
+
+    grasp_pose = np.identity(4)
+    grasp_pose[:3, :3] = slerp(0).as_matrix()
+    grasp_pose[:3, 3] = curve[0]
+
+    pregrasp_pose = grasp_pose.copy()
+    # shift the pregrasp pose 5 cm backwards along the local Z-axis of the untilted grasp pose
+    pregrasp_pose[:3, 3] -= 0.05 * orientation_flat[:3, 2]
+
+    hover_pose = pregrasp_pose.copy()
+    # shift the hover pose 5 cm upwards
+    hover_pose[2, 3] += 0.05
+
+    fold_end_pose = np.identity(4)
+    fold_end_pose[:3, :3] = slerp(1).as_matrix()
+    fold_end_pose[:3, 3] = curve[-1]
+
+    retreat_pose = fold_end_pose.copy()
+    retreat_pose[2, 3] += 0.1
+    # shift the retreat pose 5 cm upwards, but also change the orientation to top-down
+    top_down = orientation_middle
+    orientations2 = np.array([slerp(1).as_matrix(), top_down])
+    orientations2 = Rotation.from_matrix(orientations2)
+    slerp2 = Slerp([0.0, 1.0], orientations2)
+
+    for i in range(11):
+        pose = hover_pose + i / 10 * (pregrasp_pose - hover_pose)
+        pose_in_arm = np.linalg.inv(arm_in_world) @ pose
+        frame_poses.append(pose_in_arm)
+
+    for i in range(11):
+        pose = pregrasp_pose + i / 10 * (grasp_pose - pregrasp_pose)
+        pose_in_arm = np.linalg.inv(arm_in_world) @ pose
+        frame_poses.append(pose_in_arm)
 
     for i in range(num_samples):
         translation = curve[i]
@@ -95,8 +129,20 @@ def animate_arm(start_self, end_self, start_other, arm_in_world, arm_joints, hom
         grasp[:3, :3] = interpolated_orientation
         grasp[:3, 3] = translation
         grasp_in_arm = np.linalg.inv(arm_in_world) @ grasp
+        frame_poses.append(grasp_in_arm)
 
-        solutions = ur5e.inverse_kinematics_closest_with_tcp(grasp_in_arm, tcp_transform, *prev_joints)
+    for i in range(21):
+        translation = fold_end_pose[:3, 3] + i / 20 * (retreat_pose[:3, 3] - fold_end_pose[:3, 3])
+        interpolated_orientation = slerp2(i / 20).as_matrix()
+        pose = np.identity(4)
+        pose[:3, :3] = interpolated_orientation
+        pose[:3, 3] = translation
+        pose_in_arm = np.linalg.inv(arm_in_world) @ pose
+        frame_poses.append(pose_in_arm)
+
+    prev_joints = home_joints
+    for i, pose in enumerate(frame_poses):
+        solutions = ur5e.inverse_kinematics_closest_with_tcp(pose, tcp_transform, *prev_joints)
         keyframe_joints(arm_joints, *solutions[0], i + 1)
         prev_joints = solutions[0][0]
 
