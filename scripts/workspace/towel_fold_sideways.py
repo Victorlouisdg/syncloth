@@ -2,7 +2,7 @@ import airo_blender as ab
 import bpy
 import numpy as np
 from scipy.spatial.transform import Rotation, Slerp
-from ur_analytic_ik import ur5e
+from ur_analytic_ik import ur3e, ur5e, ur10e
 
 from syncloth.curves.bezier import quadratic_bezier
 from syncloth.robot_arms import add_ur_with_robotiq, set_joint_angles
@@ -11,14 +11,48 @@ from syncloth.visualization.inverse_kinematics import keyframe_joints
 from syncloth.visualization.points import add_points_as_instances
 from syncloth.visualization.scene import add_table, add_towel
 
+# Main parameters
+
+towel_length = 0.42
+ur_type = "ur3e"
+distance_between_robots = 0.5
+height_of_robots_above_table = 0.2
+arm_roll = np.deg2rad(90)
+
+# towel_length = 0.8
+# ur_type = "ur5e"
+# distance_between_robots = 0.6
+# height_of_robots_above_table = 0.3
+# arm_roll = np.deg2rad(90)
+
+# towel_length = 1.2
+# ur_type = "ur10e"
+
+# distance_between_robots = 0.6
+# height_of_robots_above_table = 0.3
+# arm_roll = np.deg2rad(90)
+
+# distance_between_robots = 0.8
+# height_of_robots_above_table = 0.05
+# arm_roll = np.deg2rad(0)
+
+
+if ur_type == "ur3e":
+    ur = ur3e
+elif ur_type == "ur5e":
+    ur = ur5e
+else:
+    ur = ur10e
+
+
 bpy.ops.object.delete()
 
 table_height = 0.7
 table = add_table(height=table_height, rotation_z=np.deg2rad(90))
-towel = add_towel(length=0.7, height=table_height + 0.003, rotation_z=np.deg2rad(90))
+towel = add_towel(length=towel_length, height=table_height + 0.003, rotation_z=np.deg2rad(90))
 
 table.location.x += 0.7
-towel.location.x += 0.40
+towel.location.x += towel_length / 2 + 0.1
 
 ab.add_material(towel, (0.5, 0.5, 0.8))
 
@@ -27,15 +61,15 @@ keypoints_3D = [towel.matrix_world @ v.co for v in towel.data.vertices]
 
 add_points_as_instances(keypoints_3D, radius=0.01, color=(0.8, 0, 0))
 
-left_arm_joints, _, left_arm_base, _, _ = add_ur_with_robotiq("ur5e")
-right_arm_joints, _, right_arm_base, _, _ = add_ur_with_robotiq("ur5e")
+left_arm_joints, _, left_arm_base, _, _ = add_ur_with_robotiq(ur_type)
+right_arm_joints, _, right_arm_base, _, _ = add_ur_with_robotiq(ur_type)
 
-y = 0.25
-left_arm_base.location = (-0.05, y, 1.1)
-left_arm_base.rotation_euler = (np.deg2rad(-90), 0, 0)
+y = distance_between_robots / 2
+left_arm_base.location = (-0.05, y, table_height + height_of_robots_above_table)
+left_arm_base.rotation_euler = (-arm_roll, 0, 0)
 
-right_arm_base.location = (-0.05, -y, 1.1)
-right_arm_base.rotation_euler = (np.deg2rad(90), 0, 0)
+right_arm_base.location = (-0.05, -y, table_height + height_of_robots_above_table)
+right_arm_base.rotation_euler = (arm_roll, 0, 0)
 
 bpy.context.view_layer.update()
 
@@ -76,15 +110,24 @@ home_joints_right = np.deg2rad([0, -150, -75, -45, 45, 0])
 set_joint_angles(home_joints_left, left_arm_joints)
 set_joint_angles(home_joints_right, right_arm_joints)
 
+keyframe_joints(left_arm_joints, home_joints_left, 0)
+keyframe_joints(right_arm_joints, home_joints_right, 0)
+
 tcp_offset = np.array([0.0, 0.0, 0.172])
 tcp_transform = np.identity(4)
 tcp_transform[:3, 3] = tcp_offset
 
 
 def animate_arm(far_self, close_self, far_other, arm_in_world, arm_joints, home_joints, left=True):
-    middle = (far_self + close_self) / 2
+
+    far_to_close = close_self - far_self
+    far_to_close_direction = far_to_close / np.linalg.norm(far_to_close)
+    start = far_self + far_to_close_direction * 0.04
+    end = close_self - far_to_close_direction * 0.04
+
+    middle = (start + end) / 2
     middle[2] += 0.3
-    points = np.vstack((far_self, middle, close_self))
+    points = np.vstack((start, middle, end))
 
     num_samples = 100
     t_range = np.linspace(0, 1, num_samples, endpoint=True)
@@ -127,7 +170,12 @@ def animate_arm(far_self, close_self, far_other, arm_in_world, arm_joints, home_
         grasp[:3, 3] = translation
         grasp_in_arm = np.linalg.inv(arm_in_world) @ grasp
 
-        solutions = ur5e.inverse_kinematics_closest_with_tcp(grasp_in_arm, tcp_transform, *prev_joints)
+        solutions = ur.inverse_kinematics_closest_with_tcp(grasp_in_arm, tcp_transform, *prev_joints)
+
+        if len(solutions) == 0:
+            print(f"No solution found for pose {i}: \n", grasp_in_arm)
+            break
+
         keyframe_joints(arm_joints, *solutions[0], i + 1)
         prev_joints = solutions[0][0]
 

@@ -2,7 +2,7 @@ import airo_blender as ab
 import bpy
 import numpy as np
 from scipy.spatial.transform import Rotation, Slerp
-from ur_analytic_ik import ur5e
+from ur_analytic_ik import ur3e, ur5e, ur10e
 
 from syncloth.curves.bezier import quadratic_bezier
 from syncloth.geometry import get_ordered_keypoints
@@ -12,11 +12,34 @@ from syncloth.visualization.inverse_kinematics import keyframe_joints
 from syncloth.visualization.points import add_points_as_instances
 from syncloth.visualization.scene import add_table, add_towel
 
+# Main parameters
+towel_length = 0.68  # max for tilt angle 60
+ur_type = "ur3e"
+distance_between_robots = 0.8
+
+# towel_length = 1.2
+# ur_type = "ur5e"
+# distance_between_robots = 1.0
+
+
+# towel_length = 2.0
+# ur_type = "ur10e"
+# distance_between_robots = 1.5
+
+
+if ur_type == "ur3e":
+    ur = ur3e
+elif ur_type == "ur5e":
+    ur = ur5e
+else:
+    ur = ur10e
+
+
 bpy.ops.object.delete()
 
 table_height = 0.7
 table = add_table(height=table_height, rotation_z=np.deg2rad(90))
-towel = add_towel(height=table_height + 0.003, rotation_z=np.deg2rad(90))
+towel = add_towel(length=towel_length, height=table_height + 0.003, rotation_z=np.deg2rad(90))
 
 ab.add_material(towel, (0.5, 0.5, 0.8))
 
@@ -26,10 +49,10 @@ keypoints_3D = [towel.matrix_world @ v.co for v in towel.data.vertices]
 
 add_points_as_instances(keypoints_3D, radius=0.01, color=(0.8, 0, 0))
 
-left_arm_joints, _, left_arm_base, _, _ = add_ur_with_robotiq("ur5e")
-right_arm_joints, _, right_arm_base, _, _ = add_ur_with_robotiq("ur5e")
+left_arm_joints, _, left_arm_base, _, _ = add_ur_with_robotiq(ur_type)
+right_arm_joints, _, right_arm_base, _, _ = add_ur_with_robotiq(ur_type)
 
-y = 0.5
+y = distance_between_robots / 2
 left_arm_base.location = (0, y, table_height)
 
 right_arm_base.location = (0, -y, table_height)
@@ -43,6 +66,9 @@ home_joints_right = np.deg2rad([0, -45, -90, 0, 0, 0])
 set_joint_angles(home_joints_left, left_arm_joints)
 set_joint_angles(home_joints_right, right_arm_joints)
 
+keyframe_joints(left_arm_joints, home_joints_left, 0)
+keyframe_joints(right_arm_joints, home_joints_right, 0)
+
 tcp_offset = np.array([0.0, 0.0, 0.172])
 tcp_transform = np.identity(4)
 tcp_transform[:3, 3] = tcp_offset
@@ -51,9 +77,13 @@ ordered_keypoints = get_ordered_keypoints(keypoints_3D)
 
 
 def animate_arm(start_self, end_self, start_other, arm_in_world, arm_joints, home_joints):
+    print("start", start_self, end_self)
     middle = (start_self + end_self) / 2
-    middle[2] += np.linalg.norm(end_self - start_self)
+    middle[2] += np.linalg.norm(end_self - start_self) * 0.8
+    print("middle", middle)
     points = np.vstack((start_self, middle, end_self))
+
+    add_points_as_instances(points, radius=0.01, color=(0, 0.8, 0))
 
     num_samples = 100
     t_range = np.linspace(0, 1, num_samples, endpoint=True)
@@ -70,7 +100,8 @@ def animate_arm(start_self, end_self, start_other, arm_in_world, arm_joints, hom
     orientation_flat = np.column_stack((X, Y, Z))
 
     # rotate 45 degrees around local Y
-    rotation_Y45 = Rotation.from_rotvec(-np.pi / 4 * Y).as_matrix()
+    tilt = -np.deg2rad(60)
+    rotation_Y45 = Rotation.from_rotvec(tilt * Y).as_matrix()
     orientation_start = rotation_Y45 @ orientation_flat
 
     # rotate 90 degrees around local Y
@@ -78,7 +109,8 @@ def animate_arm(start_self, end_self, start_other, arm_in_world, arm_joints, hom
     orientation_middle = rotation_Y90 @ orientation_flat
 
     # rotate 135 degrees around local Y
-    rotation_Y135 = Rotation.from_rotvec(-3 * np.pi / 4 * Y).as_matrix()
+    final_tilt = -np.pi - tilt
+    rotation_Y135 = Rotation.from_rotvec(final_tilt * Y).as_matrix()
     orientation_end = rotation_Y135 @ orientation_flat
 
     # use scipy SLERP to interpolate between the orientations
@@ -94,11 +126,11 @@ def animate_arm(start_self, end_self, start_other, arm_in_world, arm_joints, hom
 
     pregrasp_pose = grasp_pose.copy()
     # shift the pregrasp pose 5 cm backwards along the local Z-axis of the untilted grasp pose
-    pregrasp_pose[:3, 3] -= 0.05 * orientation_flat[:3, 2]
+    pregrasp_pose[:3, 3] -= 0.03 * orientation_flat[:3, 2]
 
     hover_pose = pregrasp_pose.copy()
     # shift the hover pose 5 cm upwards
-    hover_pose[2, 3] += 0.05
+    hover_pose[2, 3] += 0.03
 
     fold_end_pose = np.identity(4)
     fold_end_pose[:3, :3] = slerp(1).as_matrix()
@@ -142,7 +174,10 @@ def animate_arm(start_self, end_self, start_other, arm_in_world, arm_joints, hom
 
     prev_joints = home_joints
     for i, pose in enumerate(frame_poses):
-        solutions = ur5e.inverse_kinematics_closest_with_tcp(pose, tcp_transform, *prev_joints)
+        solutions = ur.inverse_kinematics_closest_with_tcp(pose, tcp_transform, *prev_joints)
+        if len(solutions) == 0:
+            print(f"No solution found for pose {i}: \n", pose)
+            break
         keyframe_joints(arm_joints, *solutions[0], i + 1)
         prev_joints = solutions[0][0]
 
