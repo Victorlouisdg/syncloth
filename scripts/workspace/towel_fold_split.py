@@ -13,14 +13,13 @@ from syncloth.visualization.points import add_points_as_instances
 from syncloth.visualization.scene import add_table, add_towel
 
 # Main parameters
-towel_length = 0.68  # max for tilt angle 60
-ur_type = "ur3e"
-distance_between_robots = 0.8
+# towel_length = 0.68  # max for tilt angle 60
+# ur_type = "ur3e"
+# distance_between_robots = 0.8
 
-# towel_length = 1.2
-# ur_type = "ur5e"
-# distance_between_robots = 1.0
-
+towel_length = 1.2
+ur_type = "ur5e"
+distance_between_robots = 1.0
 
 # towel_length = 2.0
 # ur_type = "ur10e"

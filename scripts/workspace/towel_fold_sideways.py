@@ -13,17 +13,17 @@ from syncloth.visualization.scene import add_table, add_towel
 
 # Main parameters
 
-towel_length = 0.42
-ur_type = "ur3e"
-distance_between_robots = 0.5
-height_of_robots_above_table = 0.2
-arm_roll = np.deg2rad(90)
-
-# towel_length = 0.8
-# ur_type = "ur5e"
-# distance_between_robots = 0.6
-# height_of_robots_above_table = 0.3
+# towel_length = 0.42
+# ur_type = "ur3e"
+# distance_between_robots = 0.5
+# height_of_robots_above_table = 0.2
 # arm_roll = np.deg2rad(90)
+
+towel_length = 0.8
+ur_type = "ur5e"
+distance_between_robots = 0.6
+height_of_robots_above_table = 0.3
+arm_roll = np.deg2rad(90)
 
 # towel_length = 1.2
 # ur_type = "ur10e"
