@@ -86,7 +86,8 @@ def animate_arm(start_self, end_self, start_other, arm_in_world, arm_joints, hom
 
     num_samples = 100
     t_range = np.linspace(0, 1, num_samples, endpoint=True)
-    curve = np.array([quadratic_bezier(t, *points) for t in t_range])
+    bezier = quadratic_bezier(*points)
+    curve = np.array([bezier(t) for t in t_range])
 
     curve_mesh = add_curve_mesh(curve)
     ab.add_material(curve_mesh, color=(1, 0.5, 0))

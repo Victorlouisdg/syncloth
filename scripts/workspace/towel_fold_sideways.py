@@ -131,9 +131,9 @@ def animate_arm(far_self, close_self, far_other, arm_in_world, arm_joints, home_
 
     num_samples = 100
     t_range = np.linspace(0, 1, num_samples, endpoint=True)
-    curve = np.array([quadratic_bezier(t, *points) for t in t_range])
-
-    curve_mesh = add_curve_mesh(curve)
+    bezier = quadratic_bezier(*points)
+    curve_samples = np.array([bezier(t) for t in t_range])
+    curve_mesh = add_curve_mesh(curve_samples)
     ab.add_material(curve_mesh, color=(1, 0.5, 0))
     skin(curve_mesh, radius=0.005)
 
@@ -163,7 +163,7 @@ def animate_arm(far_self, close_self, far_other, arm_in_world, arm_joints, home_
     prev_joints = home_joints
 
     for i in range(num_samples):
-        translation = curve[i]
+        translation = curve_samples[i]
         interpolated_orientation = slerp(t_range[i]).as_matrix()
         grasp = np.identity(4)
         grasp[:3, :3] = interpolated_orientation
