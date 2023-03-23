@@ -13,7 +13,7 @@ def integrate_arc_length(curve, start=0.0, end=1.0, num=50):
     return arc_length_sum
 
 
-def create_arc_length_to_parameter_map(curve, start=0.0, end=1.0, num=100):
+def create_arc_length_to_parameter_map(curve, start=0.0, end=1.0, num=1000):
     arc_length_to_s: dict[float, float] = {0.0: 0.0}
 
     arc_length_sum = 0

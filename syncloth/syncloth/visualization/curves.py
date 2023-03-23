@@ -13,9 +13,9 @@ def skin(edge_mesh: bpy.types.Object, radius: float = 0.01):
 def add_curve_mesh(points):
     """Add a string of edges between the given points."""
     edges = [(i, i + 1) for i in range(len(points) - 1)]
-    mesh = bpy.data.meshes.new("Edge string")
+    mesh = bpy.data.meshes.new("Curve Mesh")
     mesh.from_pydata(points, edges, [])
     mesh.update()
-    curve_mesh = bpy.data.objects.new("Curve", mesh)
+    curve_mesh = bpy.data.objects.new("Curve Mesh", mesh)
     bpy.context.collection.objects.link(curve_mesh)
     return curve_mesh
