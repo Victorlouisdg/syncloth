@@ -42,6 +42,12 @@ def add_frame(pose: np.ndarray = np.identity(4), size: float = 0.1, name: str = 
     frame.matrix_world = Matrix(pose)
     bpy.context.view_layer.update()
     frame.scale = (size, size, size)
+
+    # Apply the scale
+    bpy.ops.object.select_all(action="DESELECT")
+    frame.select_set(True)
+    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+
     frame.name = name
 
     return frame
