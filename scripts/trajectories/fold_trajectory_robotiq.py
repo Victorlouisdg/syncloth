@@ -24,45 +24,58 @@ bpy.ops.object.delete()  # Delete default cube
 
 # Defining the key locations of the fold
 grasp_location = np.array([0.0, 0.0, 0.0])
+fold_center = np.array([0.35, 0.0, 0.0])
+fold_axis = np.array([0.0, 1.0, 0.0])
+
+
 pregrasp_location = grasp_location + np.array([-0.05, 0.0, 0.0])
 hover_location = pregrasp_location + np.array([0.0, 0.0, 0.05])
-fold_center = np.array([0.35, 0.0, 0.0])
 fold_end = grasp_location + 2 * (fold_center - grasp_location)
-fold_middle = fold_center + np.array([0.0, 0.0, 0.4])
+fold_height = 0.35
+fold_middle = fold_center + np.array([0.0, 0.0, fold_height])
 retreat_location = fold_end + np.array([0.0, 0.0, 0.05])
-
-key_locations = [
-    hover_location,
-    pregrasp_location,
-    grasp_location,
-    fold_center,
-    fold_middle,
-    fold_end,
-    retreat_location,
-]
-add_points_as_instances(key_locations, radius=0.0075, color=(0, 0, 1))
 
 
 # Building up the trajectory
 descend_trajectory, descend_duration = linear_trajectory(hover_location, pregrasp_location, speed=0.1)
 approach_trajectory, approach_duration = linear_trajectory(pregrasp_location, grasp_location, speed=0.1)
 
-fold_arch_path = quadratic_bezier(grasp_location, fold_middle, fold_end)  # domain [0, 1]
-fold_arch_trajectory, fold_arch_duration = minimum_jerk_trajectory(fold_arch_path, peak_speed=0.5)
+# Curved Trajectories
+# Curve 1: Quadratic Bezier
+middle_control_point = fold_center + np.array([0.0, 0.0, 2 * fold_height])
+fold_arc_path = quadratic_bezier(grasp_location, middle_control_point, fold_end)  # domain [0, 1]
+fold_arc_trajectory, fold_arc_duration = minimum_jerk_trajectory(fold_arc_path, peak_speed=0.5)
+
+# Curve 2: (Squashed) Circular Arc
+# circular_arc_path = circular_arc(grasp_location, fold_center, fold_axis, np.pi)  # domain [0, 1]
+# vertical_squash = 0.5
+# def fold_arc_path(t):
+#     x, y, z = circular_arc_path(t)
+#     return np.array([x, y, z * vertical_squash])
+
+# fold_arc_trajectory, fold_arc_duration = minimum_jerk_trajectory(fold_arc_path, peak_speed=0.5)
+
+# Triangular Trajectory
+# first_half_trajectory, first_half_duration = linear_trajectory(grasp_location, fold_middle, speed=0.5)
+# second_half_trajectory, second_half_duration = linear_trajectory(fold_middle, fold_end, speed=0.5)
+# fold_arc_trajectory, fold_arc_duration = concatenate_trajectories(
+#     [first_half_trajectory, second_half_trajectory], [first_half_duration, second_half_duration]
+# )
+
 
 retreat_trajectory, retreat_duration = linear_trajectory(fold_end, retreat_location, speed=0.1)
 
 position_trajectories = [
     descend_trajectory,
     approach_trajectory,
-    fold_arch_trajectory,
+    fold_arc_trajectory,
     retreat_trajectory,
 ]
 
 position_durations = [
     descend_duration,
     approach_duration,
-    fold_arch_duration,
+    fold_arc_duration,
     retreat_duration,
 ]
 
@@ -72,7 +85,7 @@ fold_position_trajectory, total_duration = concatenate_trajectories(position_tra
 # Defining the key orientations of the fold
 # Middle orienation
 fold_middle_orientation = top_down_orientation(np.array([1, 0, 0]))
-middle_location = fold_arch_trajectory(0.5 * fold_arch_duration)
+middle_location = fold_arc_trajectory(0.5 * fold_arc_duration)
 
 local_Y = fold_middle_orientation[:, 1]
 
@@ -102,8 +115,8 @@ orientations = [
 
 orientation_durations = [
     descend_duration + approach_duration,
-    0.5 * fold_arch_duration,
-    0.5 * fold_arch_duration,
+    0.5 * fold_arc_duration,
+    0.5 * fold_arc_duration,
     retreat_duration,
 ]
 
@@ -117,12 +130,22 @@ fold_trajectory = combine_orientation_and_position_trajectory(fold_orientation_t
 
 
 # Visualization
+key_locations = [
+    hover_location,
+    pregrasp_location,
+    grasp_location,
+    fold_center,
+    fold_middle,
+    fold_end,
+    retreat_location,
+]
+add_points_as_instances(key_locations, radius=0.0075, color=(0, 0, 1))
+
+
 frames_per_second = 30
 frame_interval = 1.0 / frames_per_second
 
-total_duration = sum(orientation_durations)
 num_frames = int(np.ceil(total_duration / frame_interval))
-
 
 for time in times:
     add_frame(fold_trajectory(time), size=0.05)
