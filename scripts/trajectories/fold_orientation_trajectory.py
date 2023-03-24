@@ -106,13 +106,6 @@ def concatenate_trajectories(trajectories, durations):
 fold_position_trajectory, total_duration = concatenate_trajectories(position_trajectories, durations)
 
 
-def pose_matrix(orientation, position):
-    pose = np.identity(4)
-    pose[:3, :3] = orientation
-    pose[:3, 3] = position
-    return pose
-
-
 # Defining the key orientations of the fold
 def top_down_orientation(gripper_open_direction) -> np.ndarray:
     X = gripper_open_direction / np.linalg.norm(gripper_open_direction)  # np.array([-1, 0, 0])

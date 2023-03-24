@@ -1,9 +1,23 @@
 import airo_blender as ab
+import numpy as np
 
 
 def set_joint_angles(joint_angles, arm_joints):
     for joint, joint_angle in zip(arm_joints.values(), joint_angles):
         joint.rotation_euler = (0, 0, joint_angle)
+
+
+def add_robotiq():
+    # load gripper
+    urdf_path = "/home/idlab185/urdf-workshop/robotiq/robotiq_2f85_aprice/robotiq_2f85_v3.urdf"
+    gripper_joints, _, gripper_links = ab.import_urdf(urdf_path)
+    gripper_bases = [link for link in gripper_links.values() if link.parent is None]
+    gripper_base = gripper_bases[0]
+
+    gripper_joint = gripper_joints["finger_joint"]
+    gripper_joint.rotation_euler = (0, 0, np.deg2rad(42))
+
+    return gripper_base
 
 
 def add_ur_with_robotiq(name: str = "ur5e"):
