@@ -24,7 +24,7 @@ def add_table(
     return table
 
 
-def add_towel(width: float = 0.5, length: float = 1.2, height: float = 0.7, rotation_z: float = 0.0):
+def add_towel(width: float = 0.5, length: float = 1.2, height: float = 0.0, rotation_z: float = 0.0):
     """Creates a rectangular towel with known vertex order."""
 
     vertices = [
@@ -45,4 +45,10 @@ def add_towel(width: float = 0.5, length: float = 1.2, height: float = 0.7, rota
 
     towel.rotation_euler = (0, 0, rotation_z)
     towel.location = (0, 0, height)
+
+    # Add a Solidify modifier with 0 offset
+    towel.modifiers.new("Solidify", "SOLIDIFY")
+    towel.modifiers["Solidify"].thickness = 0.003
+    towel.modifiers["Solidify"].offset = 0.0
+
     return towel

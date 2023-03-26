@@ -30,9 +30,18 @@ class Path:
     def duration(self):
         return self.end - self.start
 
+    @property
+    def start_value(self):
+        return self.function(self.start)
+
+    @property
+    def end_value(self):
+        return self.function(self.end)
+
     # TODO discuss addding a __call__ method to Path
     # def __call__(self, t: float) -> np.ndarray:
     #     return self.function(t)
     # TODO discuss renaming "function" to "value"
     # TODO considers adding either convencience (holding value) or assert for sampling outside of domain
     # TODO consider distinguishing between PositionPath, OrientationPath and PosePath e.g. for visualization
+    # TODO how to handle joint paths
