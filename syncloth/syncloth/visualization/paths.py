@@ -8,9 +8,14 @@ from syncloth.visualization.curves import add_curve_mesh, skin
 from syncloth.visualization.points import add_points_as_instances
 
 
-def add_path_as_points(path: Path, num_points=100) -> bpy.types.Object:
+def add_path_as_points(path: Path, num_points=100, color=(1, 0, 0)) -> bpy.types.Object:
     dots = [path.function(t) for t in np.linspace(path.start, path.end, num_points)]
-    add_points_as_instances(dots, radius=0.0025, color=(1, 0, 0))
+    add_points_as_instances(dots, radius=0.0025, color=color)
+
+
+def add_pose_path_as_points(path: Path, num_points=100, color=(1, 0, 0)) -> bpy.types.Object:
+    dots = [path.function(t)[:3, 3] for t in np.linspace(path.start, path.end, num_points)]
+    add_points_as_instances(dots, radius=0.0025, color=color)
 
 
 def animate_object_along_path(object: bpy.types.Object, pose_path: Path) -> None:

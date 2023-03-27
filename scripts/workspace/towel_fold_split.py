@@ -5,7 +5,7 @@ from scipy.spatial.transform import Rotation, Slerp
 from ur_analytic_ik import ur3e, ur5e, ur10e
 
 from syncloth.curves.bezier import quadratic_bezier
-from syncloth.geometry import get_ordered_keypoints
+from syncloth.geometry import get_counterclockwise_ordered_keypoints
 from syncloth.robot_arms import add_ur_with_robotiq, set_joint_angles
 from syncloth.visualization.curves import add_curve_mesh, skin
 from syncloth.visualization.inverse_kinematics import keyframe_joints
@@ -72,7 +72,7 @@ tcp_offset = np.array([0.0, 0.0, 0.172])
 tcp_transform = np.identity(4)
 tcp_transform[:3, 3] = tcp_offset
 
-ordered_keypoints = get_ordered_keypoints(keypoints_3D)
+ordered_keypoints = get_counterclockwise_ordered_keypoints(keypoints_3D)
 
 
 def animate_arm(start_self, end_self, start_other, arm_in_world, arm_joints, home_joints):

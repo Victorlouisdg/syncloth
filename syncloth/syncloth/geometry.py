@@ -86,7 +86,7 @@ def angle_2D(v0, v1):
     return angle
 
 
-def get_ordered_keypoints(keypoints):
+def get_counterclockwise_ordered_keypoints(keypoints):
     """
     Orders keypoints according to their angle w.r.t. a frame that is created by translating the world frame to the center of the cloth.
     the first keypoints is the one with the smallest, positive angle and they are sorted counter-clockwise.
