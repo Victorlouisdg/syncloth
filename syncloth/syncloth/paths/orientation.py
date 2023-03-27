@@ -3,6 +3,8 @@ from typing import List
 import numpy as np
 from scipy.spatial.transform import Rotation, Slerp
 
+from syncloth.paths.constant import constant_trajectory
+from syncloth.paths.linear import linear_trajectory
 from syncloth.paths.path import Path
 
 
@@ -25,3 +27,11 @@ def combine_orientation_and_position_trajectory(orientation_trajectory: Path, po
     end = max(orientation_trajectory.end, position_trajectory.end)
 
     return Path(pose_trajectory, start, end)
+
+
+def linear_position_constant_orientation_trajectory(
+    start_position: np.ndarray, end_position: np.ndarray, orientation: np.ndarray, speed: float
+) -> Path:
+    position_trajectory = linear_trajectory(start_position, end_position, speed)
+    orientation_trajectory = constant_trajectory(orientation, duration=position_trajectory.duration)
+    return combine_orientation_and_position_trajectory(orientation_trajectory, position_trajectory)

@@ -10,7 +10,26 @@ from syncloth.paths.orientation import combine_orientation_and_position_trajecto
 from syncloth.paths.path import Path
 
 
-def grasp_locations_from_edge(
+def slide_grasp_orthogonal_approach_direction(edge_start, edge_end):
+    """
+    Assumes the edge is parallel to the x-y plane
+
+                       |  approach_direction
+                       v
+    edge_start +-------+------>+ edge_end
+               |               |
+
+    TODO: mention the orientation convention that follows from the cross product.
+    """
+    edge = edge_end - edge_start
+    edge_direction = edge / np.linalg.norm(edge)
+    up = np.array([0, 0, 1])
+    approach_direction = np.cross(edge_direction, up)
+
+    return approach_direction
+
+
+def slide_grasp_locations_from_edge(
     edge_start: Vector3DType,
     edge_end: Vector3DType,
     grasp_approach_direction: Vector3DType,

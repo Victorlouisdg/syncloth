@@ -9,7 +9,7 @@ from syncloth.paths.path import Path
 from syncloth.paths.retiming import minimum_jerk_trajectory
 
 
-def fold_arc_position_trajectory_bezier(
+def fold_arc_bezier_trajectory(
     fold_line: Tuple[Vector3DType, Vector3DType], grasp_location: Vector3DType, end_height_offset: float
 ) -> Path:
     start_point = grasp_location
