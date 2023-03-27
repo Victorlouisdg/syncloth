@@ -4,8 +4,8 @@ import numpy as np
 from scipy.spatial.transform import Rotation, Slerp
 from ur_analytic_ik import ur3e, ur5e, ur10e
 
-from syncloth.curves.bezier import quadratic_bezier
 from syncloth.geometry import get_counterclockwise_ordered_keypoints
+from syncloth.paths.bezier import quadratic_bezier_function
 from syncloth.robot_arms import add_ur_with_robotiq, set_joint_angles
 from syncloth.visualization.curves import add_curve_mesh, skin
 from syncloth.visualization.inverse_kinematics import keyframe_joints
@@ -86,7 +86,7 @@ def animate_arm(start_self, end_self, start_other, arm_in_world, arm_joints, hom
 
     num_samples = 100
     t_range = np.linspace(0, 1, num_samples, endpoint=True)
-    bezier = quadratic_bezier(*points)
+    bezier = quadratic_bezier_function(*points)
     curve = np.array([bezier(t) for t in t_range])
 
     curve_mesh = add_curve_mesh(curve)
