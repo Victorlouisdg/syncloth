@@ -10,6 +10,10 @@ def skin(edge_mesh: bpy.types.Object, radius: float = 0.005):
         skin_vertex.radius = (radius, radius)
 
 
+def add_line_segment(start, end):
+    return add_curve_mesh([start, end])
+
+
 def add_curve_mesh(points, closed=False):
     """Add a string of edges between the given points."""
     edges = [(i, i + 1) for i in range(len(points) - 1)]
@@ -21,3 +25,8 @@ def add_curve_mesh(points, closed=False):
     curve_mesh = bpy.data.objects.new("Curve Mesh", mesh)
     bpy.context.collection.objects.link(curve_mesh)
     return curve_mesh
+
+
+def visualize_line_segment(start, end, radius=0.002):
+    line = add_line_segment(start, end)
+    skin(line, radius=radius)

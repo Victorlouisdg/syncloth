@@ -3,7 +3,7 @@ import bpy
 import numpy as np
 
 
-def add_points_as_instances(points: np.ndarray, radius: float = 0.01, color: tuple = None):
+def add_points_as_instances(points: np.ndarray, radius: float = 0.005, color: tuple = None):
     """Add a point cloud to the scene as instances of a sphere."""
 
     # Save the active collection as we will temporarily change it to add the instances etc.

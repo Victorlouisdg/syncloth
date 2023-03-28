@@ -75,7 +75,7 @@ def slide_grasp_orientation(approach_direction: Vector3DType, angle: float = np.
     """
     orientation = flat_orientation(approach_direction)
     local_Y = orientation[:, 1]
-    rotation_local_Y = Rotation.from_rotvec(angle * local_Y).as_matrix()
+    rotation_local_Y = Rotation.from_rotvec(-angle * local_Y).as_matrix()
     orientation = rotation_local_Y @ orientation
     return orientation
 
@@ -110,9 +110,11 @@ def slide_grasp_position_trajectory(
 
 
 def slide_grasp_constant_orientation_pose_trajectory(
-    grasp_location, approach_direction, approach_distance, approach_angle
+    grasp_location, approach_direction, approach_distance, approach_angle, hover_height=0.05, speed=0.1
 ):
-    grasp_position_trajectory = slide_grasp_position_trajectory(grasp_location, approach_direction, approach_distance)
+    grasp_position_trajectory = slide_grasp_position_trajectory(
+        grasp_location, approach_direction, approach_distance, hover_height, speed
+    )
     grasp_slide_duration = grasp_position_trajectory.duration
 
     grasp_orientation = slide_grasp_orientation(approach_direction, angle=approach_angle)

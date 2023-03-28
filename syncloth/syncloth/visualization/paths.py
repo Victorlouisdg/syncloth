@@ -5,6 +5,7 @@ from mathutils import Matrix
 
 from syncloth.paths.path import Path
 from syncloth.visualization.curves import add_curve_mesh, skin
+from syncloth.visualization.frame import add_frame
 from syncloth.visualization.points import add_points_as_instances
 
 
@@ -50,3 +51,9 @@ def add_path_as_growing_curve(path, radius=0.0025, color=(1, 0, 0)):
     build_modifier.frame_start = 1
     build_modifier.frame_duration = num_frames
     skin(curve_mesh, radius=radius)
+
+
+def visualize_trajectory(trajectory, points_per_second: float = 20.0, color=(1, 0, 0)):
+    add_pose_path_as_points(trajectory, num_points=int(points_per_second * trajectory.duration), color=color)
+    add_frame(trajectory.start_value, size=0.05)
+    add_frame(trajectory.end_value, size=0.05)
