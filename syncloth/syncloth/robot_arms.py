@@ -1,6 +1,9 @@
 import airo_blender as ab
 import numpy as np
 
+from syncloth.paths.path import Path
+from syncloth.visualization.paths import animate_object_along_path
+
 
 def set_joint_angles(joint_angles, arm_joints):
     for joint, joint_angle in zip(arm_joints.values(), joint_angles):
@@ -38,3 +41,22 @@ def add_ur_with_robotiq(name: str = "ur5e"):
     gripper_joint = gripper_joints["finger_joint"]
 
     return arm_joints, arm_links, arm_base, tool_link, gripper_joint
+
+
+def add_animated_robotiq(tcp_trajectory):
+    gripper_base = add_robotiq()
+
+    def gripper_base_trajectory_function(t):
+        tcp_offset = np.array([0.0, 0.0, 0.172])
+        tcp_transform = np.identity(4)
+        tcp_transform[:3, 3] = tcp_offset
+        tcp_inverse_transform = np.linalg.inv(tcp_transform)
+        return tcp_trajectory.function(t) @ tcp_inverse_transform
+
+    gripper_base_trajectory = Path(
+        gripper_base_trajectory_function,
+        start=tcp_trajectory.start,
+        end=tcp_trajectory.end,
+    )
+
+    animate_object_along_path(gripper_base, gripper_base_trajectory)
