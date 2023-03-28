@@ -53,7 +53,12 @@ def add_path_as_growing_curve(path, radius=0.0025, color=(1, 0, 0)):
     skin(curve_mesh, radius=radius)
 
 
-def visualize_trajectory(trajectory, points_per_second: float = 20.0, color=(1, 0, 0)):
+def visualize_trajectory(trajectory: Path, points_per_second: float = 20.0, color=(1, 0, 0)):
     add_pose_path_as_points(trajectory, num_points=int(points_per_second * trajectory.duration), color=color)
     add_frame(trajectory.start_value, size=0.05)
     add_frame(trajectory.end_value, size=0.05)
+
+
+def visualize_trajectory_frames(trajectory: Path, num_frames: int = 100):
+    for t in np.linspace(0.0, trajectory.duration, num_frames):
+        add_frame(trajectory.function(t), size=0.05)

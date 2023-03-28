@@ -1,4 +1,13 @@
 import numpy as np
+from scipy.spatial.transform import Rotation
+
+
+def pitch_gripper_orientation(orientation, pitch_angle):
+    """Rotate the gripper over its local Y axis by the given angle."""
+    local_Y = orientation[:, 1]
+    rotation_local_Y = Rotation.from_rotvec(pitch_angle * local_Y).as_matrix()
+    orientation = rotation_local_Y @ orientation
+    return orientation
 
 
 def top_down_orientation(gripper_open_direction) -> np.ndarray:
@@ -13,6 +22,13 @@ def flat_orientation(gripper_forward_direction) -> np.ndarray:
     X = np.array([0, 0, 1])
     Y = np.cross(Z, X)
     return np.column_stack([X, Y, Z])
+
+
+def rotate_point(point, rotation_origin, rotation_axis, angle):
+    unit_axis = rotation_axis / np.linalg.norm(rotation_axis)
+    rotation = Rotation.from_rotvec(angle * unit_axis)
+    point_new = rotation.as_matrix() @ (point - rotation_origin) + rotation_origin
+    return point_new
 
 
 def project_point_on_line(point, line):
