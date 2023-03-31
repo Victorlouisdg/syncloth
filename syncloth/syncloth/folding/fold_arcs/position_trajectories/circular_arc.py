@@ -3,7 +3,7 @@ from typing import Tuple
 import numpy as np
 from airo_typing import Vector3DType
 
-from syncloth.paths.circular_arc import circular_arc_path
+from syncloth.paths.circular_arc import circular_arc_position_path
 from syncloth.paths.path import Path
 from syncloth.paths.retiming import minimum_jerk_trajectory
 
@@ -13,7 +13,7 @@ def fold_arc_circular_trajectory(
 ) -> Path:
     fold_line_point, fold_line_direction = fold_line
 
-    path = circular_arc_path(grasp_location, *fold_line, np.deg2rad(180))
+    path = circular_arc_position_path(grasp_location, *fold_line, np.deg2rad(180))
     trajectory = minimum_jerk_trajectory(path)
     return trajectory
 
