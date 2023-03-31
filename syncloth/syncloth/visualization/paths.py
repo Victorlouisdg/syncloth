@@ -5,7 +5,7 @@ from mathutils import Matrix
 
 from syncloth.paths.path import Path
 from syncloth.visualization.curves import add_curve_mesh, skin
-from syncloth.visualization.frame import add_frame
+from syncloth.visualization.frame import add_frame, add_frames
 from syncloth.visualization.points import add_points_as_instances
 
 
@@ -59,6 +59,8 @@ def visualize_trajectory(trajectory: Path, points_per_second: float = 20.0, colo
     add_frame(trajectory.end, size=0.05)
 
 
-def visualize_trajectory_frames(trajectory: Path, num_frames: int = 100):
-    for t in np.linspace(0.0, trajectory.duration, num_frames):
-        add_frame(trajectory(t), size=0.05)
+def visualize_trajectory_frames(trajectory: Path, frames_per_second: int = 100):
+    frames = [
+        trajectory(t) for t in np.linspace(0.0, trajectory.duration, int(frames_per_second * trajectory.duration))
+    ]
+    add_frames(frames)

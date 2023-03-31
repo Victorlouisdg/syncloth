@@ -1,4 +1,3 @@
-from syncloth.paths.arc_length import arc_length_parametrize
 from syncloth.paths.path import Path
 
 
@@ -12,15 +11,14 @@ def minimum_jerk(t: float):
 
 
 def minimum_jerk_trajectory(path: Path, peak_speed: float = 0.5):
-    path_arc_length_parametrized = arc_length_parametrize(path)
-    arc_length = path_arc_length_parametrized.end_time
+    # Note: this function expect the path to have constant speed (i.e. its arc length parametrized)
 
     # An arc length parametrized curve has constant speed of 1 m/s
     # The minimum jerk functions "wraps" the t parameter, but does not affect the domain.
     path_minimum_jerk = Path(
-        lambda t: path_arc_length_parametrized(minimum_jerk(t / arc_length) * arc_length),
+        lambda t: path(path.end_time * minimum_jerk(t / path.end_time)),
         start_time=0.0,
-        end_time=arc_length,
+        end_time=path.end_time,
     )
 
     # Minimum jerk has max speed of 1.875 m/s at t=0.5 (TODO verify the math for this)

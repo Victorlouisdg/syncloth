@@ -1,3 +1,5 @@
+from typing import List
+
 import airo_blender as ab
 import bpy
 import mathutils
@@ -51,3 +53,38 @@ def add_frame(pose: np.ndarray = np.identity(4), size: float = 0.1, name: str = 
     frame.name = name
 
     return frame
+
+
+def add_frames(poses: List[np.ndarray], size: float = 0.1):
+    # Add Frames as instances, very similar to add_points_as_instances
+    # TODO think about how to generalize and merge these two functions
+
+    # Save the active collection as we will temporarily change it to add the instances etc.
+    view_layer = bpy.context.view_layer
+    collection_originally_active = view_layer.active_layer_collection
+
+    template_collection = bpy.data.collections.new("Point template")
+    bpy.context.scene.collection.children.link(template_collection)
+    view_layer.active_layer_collection = view_layer.layer_collection.children[template_collection.name]
+    bpy.context.view_layer.update()
+
+    template = add_frame(size=0.1)
+
+    # Make new collection to group the instances
+    instances_collection = bpy.data.collections.new("Point instances")
+    bpy.context.scene.collection.children.link(instances_collection)
+    view_layer.active_layer_collection = view_layer.layer_collection.children[instances_collection.name]
+
+    # Add instances of the sphere
+    for pose in poses:
+        bpy.ops.object.collection_instance_add(collection=template_collection.name)
+        instance_empty = bpy.context.object
+        instance_empty.empty_display_size = size * 0.1
+        instance_empty.matrix_world = Matrix(pose)
+
+    # Hide the template itself
+    view_layer.layer_collection.children.get(template_collection.name).exclude = True
+
+    # Restore the active collection
+    view_layer.active_layer_collection = collection_originally_active
+    return template
