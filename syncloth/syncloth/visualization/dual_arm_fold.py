@@ -16,9 +16,9 @@ def visualize_dual_arm_fold(keypoints, fold_line, trajectories_left, trajectorie
     trajectories = trajectories_left + trajectories_right
     for trajectory in trajectories:
         add_pose_path_as_points(trajectory, num_points=int(10 * trajectory.duration), color=blender_red)
-        add_frame(trajectory.start_value)
-        add_frame(trajectory.function(0.5 * trajectory.duration), size=0.05)
-        add_frame(trajectory.end_value)
+        add_frame(trajectory.start)
+        add_frame(trajectory(0.5 * trajectory.duration), size=0.05)
+        add_frame(trajectory.end)
 
     # Keypoints
     yellow = [1.0, 1.0, 0.0]
@@ -38,5 +38,7 @@ def visualize_dual_arm_fold(keypoints, fold_line, trajectories_left, trajectorie
     # Robotiqs
     concatenated_trajectory_left = concatenate_trajectories(trajectories_left)
     concatenated_trajectory_right = concatenate_trajectories(trajectories_right)
+
+    print(concatenated_trajectory_left.duration)
     add_animated_robotiq(concatenated_trajectory_left)
     add_animated_robotiq(concatenated_trajectory_right)

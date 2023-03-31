@@ -91,7 +91,7 @@ visualize_line_segment(start, end, radius=0.002)
 
 add_points_as_instances([grasp_location, grasp_point_projection, grasp_point_reflected], color=(1, 0, 0))
 
-# add_frame(fold_arc_trajectory.function(0.5 * fold_arc_trajectory.duration))
+# add_frame(fold_arc_trajectory(0.5 * fold_arc_trajectory.duration))
 
 visualize_trajectory(fold_arc_trajectory)
 visualize_trajectory_frames(fold_arc_trajectory)

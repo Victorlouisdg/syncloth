@@ -33,7 +33,7 @@ grasp_depth = 0.05
 grasp_inset = 0.05
 approach_margin = 0.05
 approach_distance = grasp_depth + approach_margin
-approach_angle = -np.pi / 4
+approach_angle = np.pi / 4
 compliance_depth = 0.01
 fold_end_height = 0.05 + compliance_depth
 
@@ -88,9 +88,9 @@ def fold_lift_trajectories(
         grasp_location, grasp_approach_direction, approach_distance, approach_angle
     )
 
-    grasp_orienation = grasp_trajectory.end_value[:3, :3]
+    grasp_orienation = grasp_trajectory.end[:3, :3]
 
-    lift_start = grasp_trajectory.end_value[:3, 3]
+    lift_start = grasp_trajectory.end[:3, 3]
     lift_vector = np.array([0, 0, 1.1 * towel_length_estimate / 2])
     lift_end = lift_start + lift_vector
 

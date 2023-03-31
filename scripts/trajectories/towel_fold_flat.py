@@ -84,13 +84,14 @@ def fold_trajectories(
         grasp_location, grasp_approach_direction, approach_distance, approach_angle
     )
 
+    # TODO fix orientations
     fold_arc_trajectory = fold_arc_circular_slerp_trajectory(
-        fold_line, grasp_location, grasp_trajectory.function(0)[:3, :3], fold_end_height, approach_angle
+        fold_line, grasp_location, grasp_trajectory(0)[:3, :3], fold_end_height
     )
 
     # Alternatively, use the Bezier trajectory
     # fold_arc_trajectory = fold_arc_bezier_slerp_trajectory(
-    #     fold_line, grasp_location, grasp_trajectory.function(0)[:3, :3], fold_end_height
+    #     fold_line, grasp_location, grasp_trajectory(0)[:3, :3], fold_end_height
     # )
 
     fold_end = fold_arc_trajectory.end_value[:3, 3]

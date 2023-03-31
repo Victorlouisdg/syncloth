@@ -3,7 +3,7 @@ from syncloth.paths.path import Path
 
 
 def scale_speed(trajectory: Path, factor: float) -> Path:
-    return Path(lambda t: trajectory.function(t * factor), start=0.0, end=trajectory.end / factor)
+    return Path(lambda t: trajectory(t * factor), start_time=0.0, end_time=trajectory.end_time / factor)
 
 
 def minimum_jerk(t: float):
@@ -13,14 +13,14 @@ def minimum_jerk(t: float):
 
 def minimum_jerk_trajectory(path: Path, peak_speed: float = 0.5):
     path_arc_length_parametrized = arc_length_parametrize(path)
-    arc_length = path_arc_length_parametrized.end
+    arc_length = path_arc_length_parametrized.end_time
 
     # An arc length parametrized curve has constant speed of 1 m/s
     # The minimum jerk functions "wraps" the t parameter, but does not affect the domain.
     path_minimum_jerk = Path(
-        lambda t: path_arc_length_parametrized.function(minimum_jerk(t / arc_length) * arc_length),
-        start=0.0,
-        end=arc_length,
+        lambda t: path_arc_length_parametrized(minimum_jerk(t / arc_length) * arc_length),
+        start_time=0.0,
+        end_time=arc_length,
     )
 
     # Minimum jerk has max speed of 1.875 m/s at t=0.5 (TODO verify the math for this)

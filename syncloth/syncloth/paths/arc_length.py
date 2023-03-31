@@ -6,11 +6,11 @@ from syncloth.paths.path import Path
 def integrate_arc_length(path: Path, num=50):
     # TODO implement smarter method e.g. Gauss-Kronrod or Gaussian quadrature
     arc_length_sum = 0
-    s_range = np.linspace(path.start, path.end, num)
+    s_range = np.linspace(path.start_time, path.end_time, num)
     for i in range(len(s_range) - 1):
         s = s_range[i]
         s_next = s_range[i + 1]
-        arc_length_sum += np.linalg.norm(path.function(s_next) - path.function(s))
+        arc_length_sum += np.linalg.norm(path(s_next) - path(s))
 
     return arc_length_sum
 
@@ -19,11 +19,11 @@ def create_arc_length_to_parameter_map(path: Path, num=1000):
     arc_length_to_s: dict[float, float] = {0.0: 0.0}
 
     arc_length_sum = 0
-    s_range = np.linspace(path.start, path.end, num)
+    s_range = np.linspace(path.start_time, path.end_time, num)
     for i in range(len(s_range) - 1):
         s = s_range[i]
         s_next = s_range[i + 1]
-        arc_length_sum += np.linalg.norm(path.function(s_next) - path.function(s))
+        arc_length_sum += np.linalg.norm(path(s_next) - path(s))
         arc_length_to_s[arc_length_sum] = s_next
 
     return arc_length_to_s, arc_length_sum
@@ -35,9 +35,9 @@ def arc_length_parametrize(path: Path):
 
     def arc_length_parametrized(t):
         if np.isclose(t, 0.0):
-            return path.function(path.start)
+            return path.start
         if np.isclose(t, arc_length):
-            return path.function(path.end)
+            return path.end
 
         # TODO verify correctness of the 3 lines below
         i = np.searchsorted(arc_lengths, t, side="right")
@@ -51,6 +51,6 @@ def arc_length_parametrize(path: Path):
         weight_prev = 1 - weight_next
 
         s_interpolated = s_next * weight_next + s_prev * weight_prev
-        return path.function(s_interpolated)
+        return path(s_interpolated)
 
-    return Path(arc_length_parametrized, start=0.0, end=arc_length)
+    return Path(arc_length_parametrized, start_time=0.0, end_time=arc_length)

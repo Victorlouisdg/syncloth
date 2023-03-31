@@ -46,7 +46,7 @@ fold_position_trajectory = concatenate_trajectories(
 # Defining the key orientations of the fold
 # Middle orienation
 fold_middle_orientation = top_down_orientation(np.array([1, 0, 0]))
-middle_location = fold_arc_trajectory.function(0.5 * fold_arc_trajectory.duration)
+middle_location = fold_arc_trajectory(0.5 * fold_arc_trajectory.duration)
 
 local_Y = fold_middle_orientation[:, 1]
 
@@ -102,7 +102,7 @@ add_path_as_points(fold_position_trajectory, num_points=100)
 add_path_as_growing_curve(fold_position_trajectory, color=(0.8, 0.5, 0.2))
 
 for time in times:
-    add_frame(fold_trajectory.function(time), size=0.05)
+    add_frame(fold_trajectory(time), size=0.05)
 
 
 gripper_base = add_robotiq()
@@ -115,13 +115,13 @@ def gripper_base_trajectory_function(t):
     tcp_transform = np.identity(4)
     tcp_transform[:3, 3] = tcp_offset
     tcp_inverse_transform = np.linalg.inv(tcp_transform)
-    return tcp_trajectory.function(t) @ tcp_inverse_transform
+    return tcp_trajectory(t) @ tcp_inverse_transform
 
 
 gripper_base_trajectory = Path(
     gripper_base_trajectory_function,
-    start=tcp_trajectory.start,
-    end=tcp_trajectory.end,
+    start_time=tcp_trajectory.start_time,
+    end_time=tcp_trajectory.end_time,
 )
 
 animate_object_along_path(gripper_base, gripper_base_trajectory)

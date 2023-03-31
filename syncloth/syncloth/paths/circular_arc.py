@@ -8,4 +8,4 @@ def circular_arc_path(start, center, axis, max_angle: float) -> Path:
         rotation = Rotation.from_rotvec(angle * axis)
         return center + rotation.apply(start - center)
 
-    return Path(circular_arc_function, start=0.0, end=max_angle)
+    return Path(circular_arc_function, start_time=0.0, end_time=max_angle)

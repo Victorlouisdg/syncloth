@@ -51,12 +51,12 @@ def add_animated_robotiq(tcp_trajectory):
         tcp_transform = np.identity(4)
         tcp_transform[:3, 3] = tcp_offset
         tcp_inverse_transform = np.linalg.inv(tcp_transform)
-        return tcp_trajectory.function(t) @ tcp_inverse_transform
+        return tcp_trajectory(t) @ tcp_inverse_transform
 
     gripper_base_trajectory = Path(
         gripper_base_trajectory_function,
-        start=tcp_trajectory.start,
-        end=tcp_trajectory.end,
+        start_time=tcp_trajectory.start_time,
+        end_time=tcp_trajectory.end_time,
     )
 
     animate_object_along_path(gripper_base, gripper_base_trajectory)
