@@ -1,7 +1,10 @@
+import json
 import os
 
+import airo_blender as ab
 import bpy
 import numpy as np
+from airo_dataset_tools.camera_intrinsics import CameraIntrinsics, FocalLengths, PrincipalPoint, Resolution
 from mathutils import Matrix
 
 from syncloth.robot_arms import add_ur_with_robotiq
@@ -11,7 +14,7 @@ bpy.ops.object.delete()  # Delete the default cube
 camera = bpy.data.objects["Camera"]
 
 # Set camera extrinsics
-camera.location = (0, 0, 1)
+camera.location = (0, 0, 1.3)
 camera.rotation_euler = (0, 0, 0)  # Look down the z-axis
 
 # Set camera intrinsics
@@ -22,20 +25,9 @@ camera.rotation_euler = (0, 0, 0)  # Look down the z-axis
 image_resolution_x = 2208
 image_resolution_y = 1242
 
-sensor_witdh_mm = 5.376
-sensor_height_mm = 3.04
 
-camera.data.lens = 2.12  # focal length in mm
-camera.data.sensor_width = sensor_witdh_mm  # mm
-camera.data.sensor_height = sensor_height_mm  # mm
-
-image_aspect_ratio = image_resolution_x / image_resolution_y
-sensor_aspect_ratio = sensor_witdh_mm / sensor_height_mm
-
-if image_aspect_ratio > sensor_aspect_ratio:
-    camera.data.sensor_fit = "HORIZONTAL"  # image is wider, so fit to width
-else:
-    camera.data.sensor_fit = "VERTICAL"
+camera.data.lens_unit = "FOV"
+camera.data.angle = np.deg2rad(92.32963675846877)
 
 scene = bpy.context.scene
 
@@ -78,62 +70,45 @@ board_transform[:3, 3] = board_offset
 board.parent = tool_link
 board.matrix_parent_inverse = Matrix(board_transform)
 
-# TODO save image to disk and pass to opencv
+
+K = ab.intrinsics_matrix_from_blender()
+
+with np.printoptions(precision=3, suppress=True):
+    print(K)
+
+camera_intrinsics = CameraIntrinsics(
+    image_resolution=Resolution(width=image_resolution_x, height=image_resolution_y),
+    focal_lengths_in_pixels=FocalLengths(fx=K[0, 0], fy=K[1, 1]),
+    principal_point_in_pixels=PrincipalPoint(cx=K[0, 2], cy=K[1, 2]),
+)
+
+print(camera_intrinsics)
+
+with open("camera_intrinsics.json", "w") as file:
+    json.dump(camera_intrinsics.dict(exclude_none=True), file, indent=4)
 
 
-from airo_camera_toolkit.calibration.fiducial_markers import AIRO_DEFAULT_ARUCO_DICT, AIRO_DEFAULT_CHARUCO_BOARD
+eef_poses = []  # TODO
 
-# aruco_marker_size = (0.031,)
-# charuco_x_count = 7
-# charuco_y_count = 5
-# charuco_tile_size = (0.04,)
+# Generated with:
+# np.printoptions(precision=3, suppress=True)
+# np.random.uniform(-np.pi, np.pi, 6)
+# But tweaked to make the board visible
+joint_configurations = [
+    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [np.pi / 2, np.deg2rad(-142), np.deg2rad(77.4), -1.5707963267948966, np.deg2rad(190), -np.pi / 2],
+    [np.deg2rad(-142), -1.97601766, np.deg2rad(-71.4), 2.36436238, -0.40880767, np.deg2rad(146)],
+    [np.deg2rad(25), -1.26125591, np.deg2rad(-110), -3.10492817, -1.63491052, np.deg2rad(73)],
+    [-2.37219922, np.deg2rad(250), -1.79723309, -2.50483946, np.deg2rad(35), 1.69997479],
+    [-0.97493267, -3.0887579, 1.03988655, 1.05644123, 3.03990261, np.deg2rad(-316)],
+]
 
-# aruco_dict = AIRO_DEFAULT_ARUCO_DICT
-# detect_charuco = charuco_x_count is not None and charuco_y_count is not None and charuco_tile_size is not None
-# if detect_charuco:
-#     charuco_board = aruco.CharucoBoard(
-#         (charuco_x_count, charuco_y_count), charuco_tile_size, aruco_marker_size, aruco_dict
-#     )
+for i, joint_configuration in enumerate(joint_configurations):
+    for joint, angle in zip(arm_joints.values(), joint_configuration):
+        joint.rotation_euler.z = angle
 
-aruco_dict = AIRO_DEFAULT_ARUCO_DICT
-charuco_board = AIRO_DEFAULT_CHARUCO_BOARD
+    bpy.context.view_layer.update()
+    eef_poses.append(tool_link.matrix_world.copy())
 
-# camera = Zed2i()
-
-# print("press Q to quit")
-# while True:
-#     aruco_result = None
-#     charuco_result = None
-#     aruco_poses = None
-#     charuco_pose = None
-#     # image = camera.get_rgb_image()
-
-#     image = ImageConverter.from_numpy_format(image).image_in_opencv_format
-
-#     intrinsics = camera.intrinsics_matrix()
-
-#     aruco_result = detect_aruco_markers(image, aruco_dict)
-
-#     if aruco_result:
-#         aruco_poses = get_poses_of_aruco_markers(aruco_result, 0.04, intrinsics)
-
-#     if aruco_result:
-#         charuco_result = detect_charuco_corners(image, aruco_result, charuco_board)
-
-#         if charuco_result:
-#             charuco_pose = get_pose_of_charuco_board(charuco_result, charuco_board, intrinsics)
-#     if aruco_result:
-#         image = visualize_aruco_detections(image, aruco_result)
-#         if aruco_poses is not None:
-#             image = draw_frame_on_image(image, aruco_poses[0], intrinsics)
-
-#     if charuco_result:
-#         image = visualize_charuco_detection(image, charuco_result)
-#         if charuco_pose is not None:
-#             image = draw_frame_on_image(image, charuco_pose, intrinsics)
-
-#     image = cv2.resize(image, (1024, 768))
-#     cv2.imshow("image", image)
-#     key = cv2.waitKey(1)
-#     if key == ord("q"):
-#         break
+    bpy.context.scene.render.filepath = f"pose{i:04d}.png"
+    bpy.ops.render.render(write_still=True)
