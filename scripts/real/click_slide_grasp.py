@@ -139,12 +139,9 @@ if __name__ == "__main__":  # noqa: C901
 
             vector_to_tip = calculate_fingertip_displacement_when_open(approach_angle)
             height_offset = np.array([0, 0, -vector_to_tip[2]])
-
             fingertip_thickness = 0.008
             thickness_offset = [0, 0, np.cos(approach_angle) * fingertip_thickness]
-
             margin = 0.001
-
             grasp_location += height_offset + thickness_offset + margin
 
             grasp_trajectory = slide_grasp_constant_orientation_pose_trajectory(
@@ -157,7 +154,6 @@ if __name__ == "__main__":  # noqa: C901
             )
 
             start_pose = grasp_trajectory(0.0)
-
             robot.move_to_tcp_pose(start_pose, joint_speed=0.4).wait()
 
             control_period = 0.01
