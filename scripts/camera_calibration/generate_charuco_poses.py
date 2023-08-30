@@ -132,19 +132,14 @@ eef_poses = []  # TODO
 # np.printoptions(precision=3, suppress=True)
 # np.random.uniform(-np.pi, np.pi, 6)
 # But tweaked to make the board visible
-# joint_configurations = [
-#     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-#     [np.pi / 2, np.deg2rad(-142), np.deg2rad(77.4), -1.5707963267948966, np.deg2rad(190), -np.pi / 2],
-#     [np.deg2rad(-142), -1.97601766, np.deg2rad(-71.4), 2.36436238, -0.40880767, np.deg2rad(146)],
-#     [np.deg2rad(25), -1.26125591, np.deg2rad(-110), -3.10492817, -1.63491052, np.deg2rad(73)],
-#     [-2.37219922, np.deg2rad(250), -1.79723309, -2.50483946, np.deg2rad(35), 1.69997479],
-#     [-0.97493267, -3.0887579, 1.03988655, 1.05644123, 3.03990261, np.deg2rad(-316)],
-# ]
-
 joint_configurations = [
+    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     [np.pi / 2, np.deg2rad(-142), np.deg2rad(77.4), -1.5707963267948966, np.deg2rad(190), -np.pi / 2],
+    [np.deg2rad(-142), -1.97601766, np.deg2rad(-71.4), 2.36436238, -0.40880767, np.deg2rad(146)],
+    [np.deg2rad(25), -1.26125591, np.deg2rad(-110), -3.10492817, -1.63491052, np.deg2rad(73)],
+    [-2.37219922, np.deg2rad(250), -1.79723309, -2.50483946, np.deg2rad(35), 1.69997479],
+    [-0.97493267, -3.0887579, 1.03988655, 1.05644123, 3.03990261, np.deg2rad(-316)],
 ]
-
 
 for i, joint_configuration in enumerate(joint_configurations):
     for joint, angle in zip(arm_joints.values(), joint_configuration):
