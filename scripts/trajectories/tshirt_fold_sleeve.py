@@ -3,10 +3,7 @@ import numpy as np
 from synthetic_cloth_data.geometric_templates import TshirtMeshConfig, create_tshirt_vertices
 
 from syncloth.folding.fold_arcs.pose_trajectories.circular_slerp import fold_arc_circular_slerp_trajectory
-from syncloth.grasping.slide_grasp import (
-    slide_grasp_constant_orientation_pose_trajectory,
-    slide_grasp_orthogonal_approach_direction,
-)
+from syncloth.grasping.slide_grasp import slide_grasp_orthogonal_approach_direction, slide_grasp_trajectory
 from syncloth.paths.orientation import linear_position_constant_orientation_trajectory
 from syncloth.paths.retiming import scale_speed
 from syncloth.visualization.curves import add_curve_mesh
@@ -71,7 +68,7 @@ def fold_trajectories(
     fold_end_height,
     retreat_height=0.1,
 ):
-    grasp_trajectory = slide_grasp_constant_orientation_pose_trajectory(
+    grasp_trajectory = slide_grasp_trajectory(
         grasp_location, grasp_approach_direction, approach_distance, approach_angle
     )
 

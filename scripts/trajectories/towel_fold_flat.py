@@ -5,9 +5,9 @@ from syncloth.folding.fold_arcs.pose_trajectories.circular_slerp import fold_arc
 from syncloth.folding.fold_lines.towel import towel_fold_line
 from syncloth.geometry import get_counterclockwise_ordered_keypoints
 from syncloth.grasping.slide_grasp import (
-    slide_grasp_constant_orientation_pose_trajectory,
     slide_grasp_locations_from_edge,
     slide_grasp_orthogonal_approach_direction,
+    slide_grasp_trajectory,
 )
 from syncloth.paths.orientation import linear_position_constant_orientation_trajectory
 from syncloth.visualization.dual_arm_fold import visualize_dual_arm_fold
@@ -80,7 +80,7 @@ def fold_trajectories(
     fold_end_height,
     retreat_height=0.1,
 ):
-    grasp_trajectory = slide_grasp_constant_orientation_pose_trajectory(
+    grasp_trajectory = slide_grasp_trajectory(
         grasp_location, grasp_approach_direction, approach_distance, approach_angle
     )
 

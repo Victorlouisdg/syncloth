@@ -1,10 +1,7 @@
 import bpy
 import numpy as np
 
-from syncloth.grasping.slide_grasp import (
-    slide_grasp_constant_orientation_pose_trajectory,
-    slide_grasp_orthogonal_approach_direction,
-)
+from syncloth.grasping.slide_grasp import slide_grasp_orthogonal_approach_direction, slide_grasp_trajectory
 from syncloth.robot_arms import add_animated_robotiq
 from syncloth.visualization.curves import visualize_line_segment
 from syncloth.visualization.paths import visualize_trajectory
@@ -24,7 +21,7 @@ approach_distance = grasp_depth + approach_margin
 grasp_location = edge_middle + grasp_depth * grasp_approach_direction
 approach_angle = np.pi / 4
 
-grasp_trajectory = slide_grasp_constant_orientation_pose_trajectory(
+grasp_trajectory = slide_grasp_trajectory(
     grasp_location, grasp_approach_direction, approach_distance, approach_angle, hover_height, speed
 )
 

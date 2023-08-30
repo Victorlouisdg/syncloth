@@ -109,7 +109,7 @@ def slide_grasp_position_trajectory(
     # orientation = slide_grasp_orientation(approach_direction, angle)
 
 
-def slide_grasp_constant_orientation_pose_trajectory(
+def slide_grasp_trajectory(
     grasp_location, approach_direction, approach_distance, approach_angle, hover_height=0.05, speed=0.1
 ):
     grasp_position_trajectory = slide_grasp_position_trajectory(

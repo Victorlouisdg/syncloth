@@ -91,8 +91,8 @@ visualize_line_segment(start, end, radius=0.002)
 
 
 visualize_trajectory(fold_arc_trajectory_left)
-visualize_trajectory_frames(fold_arc_trajectory_left)
+visualize_trajectory_frames(fold_arc_trajectory_left, frames_per_second=10)
 add_animated_robotiq(fold_arc_trajectory_left)
 visualize_trajectory(fold_arc_trajectory_right)
-visualize_trajectory_frames(fold_arc_trajectory_right)
+visualize_trajectory_frames(fold_arc_trajectory_right, frames_per_second=10)
 add_animated_robotiq(fold_arc_trajectory_right)

@@ -3,7 +3,7 @@ import numpy as np
 
 from syncloth.folding.fold_lines.towel import towel_fold_line
 from syncloth.geometry import get_counterclockwise_ordered_keypoints
-from syncloth.grasping.slide_grasp import slide_grasp_constant_orientation_pose_trajectory
+from syncloth.grasping.slide_grasp import slide_grasp_trajectory
 from syncloth.paths.orientation import linear_position_constant_orientation_trajectory
 from syncloth.visualization.dual_arm_fold import visualize_dual_arm_fold
 from syncloth.visualization.scene import add_towel
@@ -84,7 +84,7 @@ def fold_lift_trajectories(
     fold_end_height,
     towel_length_estimate,
 ):
-    grasp_trajectory = slide_grasp_constant_orientation_pose_trajectory(
+    grasp_trajectory = slide_grasp_trajectory(
         grasp_location, grasp_approach_direction, approach_distance, approach_angle
     )
 
