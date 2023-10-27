@@ -60,3 +60,7 @@ def add_animated_robotiq(tcp_trajectory):
     )
 
     animate_object_along_path(gripper_base, gripper_base_trajectory)
+
+
+def load_ur5_with_robotiq_and_charuco():
+    pass

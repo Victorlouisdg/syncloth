@@ -1,0 +1,3 @@
+from syncloth.robot_arms import load_ur5_with_robotiq_and_charuco
+
+load_ur5_with_robotiq_and_charuco()

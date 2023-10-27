@@ -13,7 +13,6 @@ from airo_dataset_tools.data_parsers.camera_intrinsics import (
 )
 from airo_dataset_tools.data_parsers.pose import Pose
 from mathutils import Matrix
-from spatialmath.base import trnorm
 
 bpy.ops.object.delete()  # Delete the default cube
 
@@ -50,7 +49,6 @@ board = bpy.context.object
 
 # enable the backface culling option for the material of the board
 board.data.materials[0].use_backface_culling = True
-
 
 num_board_rows = 5
 num_board_cols = 7
@@ -132,28 +130,28 @@ eef_poses = []  # TODO
 # np.printoptions(precision=3, suppress=True)
 # np.random.uniform(-np.pi, np.pi, 6)
 # But tweaked to make the board visible
-joint_configurations = [
-    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [np.pi / 2, np.deg2rad(-142), np.deg2rad(77.4), -1.5707963267948966, np.deg2rad(190), -np.pi / 2],
-    [np.deg2rad(-142), -1.97601766, np.deg2rad(-71.4), 2.36436238, -0.40880767, np.deg2rad(146)],
-    [np.deg2rad(25), -1.26125591, np.deg2rad(-110), -3.10492817, -1.63491052, np.deg2rad(73)],
-    [-2.37219922, np.deg2rad(250), -1.79723309, -2.50483946, np.deg2rad(35), 1.69997479],
-    [-0.97493267, -3.0887579, 1.03988655, 1.05644123, 3.03990261, np.deg2rad(-316)],
-]
+# joint_configurations = [
+#     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+#     [np.pi / 2, np.deg2rad(-142), np.deg2rad(77.4), -1.5707963267948966, np.deg2rad(190), -np.pi / 2],
+#     [np.deg2rad(-142), -1.97601766, np.deg2rad(-71.4), 2.36436238, -0.40880767, np.deg2rad(146)],
+#     [np.deg2rad(25), -1.26125591, np.deg2rad(-110), -3.10492817, -1.63491052, np.deg2rad(73)],
+#     [-2.37219922, np.deg2rad(250), -1.79723309, -2.50483946, np.deg2rad(35), 1.69997479],
+#     [-0.97493267, -3.0887579, 1.03988655, 1.05644123, 3.03990261, np.deg2rad(-316)],
+# ]
 
-for i, joint_configuration in enumerate(joint_configurations):
-    for joint, angle in zip(arm_joints.values(), joint_configuration):
-        joint.rotation_euler.z = angle
+# for i, joint_configuration in enumerate(joint_configurations):
+#     for joint, angle in zip(arm_joints.values(), joint_configuration):
+#         joint.rotation_euler.z = angle
 
-    bpy.context.view_layer.update()
+#     bpy.context.view_layer.update()
 
-    eef_pose = trnorm(np.array(tool_link.matrix_world))
-    print(eef_pose)
-    eef_pose_saveable = Pose.from_homogeneous_matrix(eef_pose)
-    eef_pose_file = os.path.join(output_dir, f"eef_pose_{i:04d}.json")
-    with open(eef_pose_file, "w") as file:
-        json.dump(eef_pose_saveable.dict(exclude_none=True), file, indent=4)
+#     eef_pose = trnorm(np.array(tool_link.matrix_world))
+#     print(eef_pose)
+#     eef_pose_saveable = Pose.from_homogeneous_matrix(eef_pose)
+#     eef_pose_file = os.path.join(output_dir, f"eef_pose_{i:04d}.json")
+#     with open(eef_pose_file, "w") as file:
+#         json.dump(eef_pose_saveable.dict(exclude_none=True), file, indent=4)
 
-    render_path = os.path.join(output_dir, f"pose_{i:04d}.png")
-    bpy.context.scene.render.filepath = render_path
-    bpy.ops.render.render(write_still=True)
+#     render_path = os.path.join(output_dir, f"pose_{i:04d}.png")
+#     bpy.context.scene.render.filepath = render_path
+#     bpy.ops.render.render(write_still=True)
